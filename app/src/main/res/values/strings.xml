@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Matule</string>
+    <string name="hello">Hello Again!</string>
+    <string name="fill_details">Fill your details or continue with social media</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="password">Password</string>
+    <string name="recovery_pass">Recovery Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="new_create_user">New User? Create Account</string>
+
+</resources>
