@@ -8,22 +8,32 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
@@ -32,13 +42,16 @@ import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
 import com.example.matule.presentation.ui.theme.Disable
 import com.example.matule.presentation.ui.theme.Hint
+import com.example.matule.presentation.ui.theme.Red
 import com.example.matule.presentation.ui.theme.SubTextDark
 import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.SignInViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignIn(
-    viewModel: SignInViewModel = viewModel()
+    viewModel: SignInViewModel = viewModel(),
+    onClickSignIn: () -> Unit
 ) {
     val textFieldColors = TextFieldDefaults.colors(
         unfocusedTextColor = TextColor,
@@ -140,6 +153,22 @@ fun SignIn(
                             fontWeight = FontWeight.Medium
                         )
                     },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                viewModel.visualPassword = if (viewModel.visualPassword is PasswordVisualTransformation) VisualTransformation.None else PasswordVisualTransformation()
+                            }
+                        ) {
+                            val painter = if (viewModel.visualPassword is PasswordVisualTransformation) painterResource(R.drawable.eye_closed) else painterResource(R.drawable.eye_open)
+                            Icon(
+                                painter = painter,
+                                contentDescription = "Visual password",
+                                tint = Hint,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    },
+                    visualTransformation = viewModel.visualPassword,
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -164,7 +193,19 @@ fun SignIn(
             }
 
             Button(
-                onClick = {},
+                onClick = {
+                    if (viewModel.login.isEmpty() && viewModel.password.isEmpty()) {
+                        viewModel.visibleDialog = true
+                        viewModel.textError = "Пожалуйста, заполните все поля"
+                    } else {
+                        viewModel.viewModelScope.launch {
+                            viewModel.signIn(viewModel.login, viewModel.password)
+                            if (viewModel.idUser != null) {
+                                onClickSignIn()
+                            }
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -175,11 +216,17 @@ fun SignIn(
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.sign_in),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                if (viewModel.isLoading) {
+                    CircularProgressIndicator(color = Block)
+                } else {
+
+
+                    Text(
+                        text = stringResource(R.string.sign_in),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
 
@@ -199,11 +246,67 @@ fun SignIn(
             )
         }
     }
+
+    if (viewModel.visibleDialog) {
+        DialogError(viewModel)
+    }
+}
+
+@Composable
+fun DialogError(
+    viewModel: SignInViewModel
+    ) {
+    AlertDialog(
+        onDismissRequest = {
+            viewModel.visibleDialog = false
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    viewModel.visibleDialog = false
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Accent
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "OK",
+                    fontSize = 16.sp
+                )
+            }
+        },
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.error),
+                contentDescription = "Error",
+                tint = Red,
+                modifier = Modifier.size(48.dp)
+            )
+        },
+        containerColor = Block,
+        title = {
+            Text(
+                text = "Ошибка!",
+                fontSize = 24.sp,
+                color = TextColor,
+                fontFamily = poppins
+            )
+        },
+        text = {
+            Text(
+                text = viewModel.textError,
+                fontSize = 14.sp,
+                color = TextColor,
+                fontFamily = poppins
+            )
+        }
+    )
 }
 
 
 @Preview(showBackground = true)
 @Composable
 fun SignInPreview() {
-    SignIn()
+    SignIn() {}
 }
