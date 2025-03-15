@@ -189,6 +189,6 @@ fun PagerItem(page: Int) {
 
 @Preview(showBackground = true)
 @Composable
-fun OnBoardingPreview() {
+private fun OnBoardingPreview() {
     OnBoarding{}
 }

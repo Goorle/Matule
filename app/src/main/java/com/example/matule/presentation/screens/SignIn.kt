@@ -307,6 +307,6 @@ fun DialogError(
 
 @Preview(showBackground = true)
 @Composable
-fun SignInPreview() {
+private fun SignInPreview() {
     SignIn() {}
 }
