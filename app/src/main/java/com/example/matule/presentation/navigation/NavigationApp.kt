@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.matule.presentation.screens.Home
 import com.example.matule.presentation.screens.SignIn
+import com.example.matule.presentation.screens.SplashScreen
 
 @Composable
 fun NavigationApp(
@@ -14,7 +15,7 @@ fun NavigationApp(
 
     NavHost(
         navController = navHostController,
-        startDestination = Routes.SignIn.route
+        startDestination = Routes.SplashScreen.route
     ) {
         composable(Routes.SignIn.route) {
             SignIn(
@@ -26,6 +27,12 @@ fun NavigationApp(
 
         composable(Routes.Home.route) {
             Home()
+        }
+
+        composable(Routes.SplashScreen.route) {
+            SplashScreen {
+                navHostController.navigate(Routes.SignIn.route)
+            }
         }
     }
 }
