@@ -7,4 +7,11 @@
     <string name="recovery_pass">Восстановить</string>
     <string name="sign_in">Войти</string>
     <string name="new_create_user">Вы впервые? Создать пользователя</string>
+    <string name="welcome">Добро пожаловать</string>
+    <string name="let_start">Начнем путешествие</string>
+    <string name="smart_collection">Умная, великолепная и модная коллекция Изучите сейчас</string>
+    <string name="have_power">У вас есть сила, чтобы</string>
+    <string name="your_room">В вашей комнате много красивых и привлекательных растений</string>
+    <string name="start">Начать</string>
+    <string name="next">Далее</string>
 </resources>
