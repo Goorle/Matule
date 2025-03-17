@@ -1,9 +1,12 @@
 package com.example.matule.presentation.screens
 
+import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,7 +33,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +56,7 @@ import com.example.matule.presentation.components.CardProduct
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
+import com.example.matule.presentation.ui.theme.Red
 import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.HomeViewModel
 
@@ -68,6 +81,9 @@ fun Home(
             Spacer(Modifier.height(25.dp))
 
             Popularity(viewModel)
+
+            Spacer(Modifier.height(25.dp))
+            Promotions(viewModel)
         }
     }
 }
@@ -155,6 +171,67 @@ private fun Popularity(
                 items(products) {item ->
                     CardProduct(item)
                     Spacer(Modifier.width(15.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Promotions(
+    viewModel: HomeViewModel
+) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(R.string.discount),
+                fontFamily = poppins,
+                color = TextColor,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = stringResource(R.string.all),
+                fontFamily = poppins,
+                color = Accent,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.clickable{
+
+                }
+            )
+        }
+
+        Spacer(Modifier.height(5.dp))
+        LazyRow(
+            modifier = Modifier.fillMaxWidth().height(100.dp)
+        ) {
+            val currentPromotions = viewModel.promotions
+            if (currentPromotions != null) {
+                items (currentPromotions) { image ->
+                    var bitmap by remember {
+                        mutableStateOf<Bitmap?>(null)
+                    }
+                    LaunchedEffect(Unit) {
+                        bitmap = viewModel.getImagePromotion(image.image)
+                    }
+                    val currentBitmap = bitmap
+                    if (currentBitmap != null) {
+                        Image(
+                            bitmap = currentBitmap.asImageBitmap(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .fillParentMaxSize()
+                                .clip(RoundedCornerShape(16.dp))
+                        )
+                    } else {
+                        CircularProgressIndicator()
+                    }
                 }
             }
         }
