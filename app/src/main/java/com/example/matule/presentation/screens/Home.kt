@@ -51,7 +51,6 @@ import com.example.matule.presentation.viewmodel.HomeViewModel
 fun Home(
     viewModel: HomeViewModel = viewModel()
 ) {
-    //viewModel.getCategories()
     Scaffold(
         topBar = {
             TopBar()
@@ -65,6 +64,9 @@ fun Home(
                 .padding(horizontal = 15.dp, vertical = 15.dp)
         ) {
             Categories(viewModel)
+
+            Spacer(Modifier.height(25.dp))
+
             Popularity(viewModel)
         }
     }
@@ -144,6 +146,7 @@ private fun Popularity(
             )
         }
 
+        Spacer(Modifier.height(10.dp))
         LazyRow(
 
         ) {
@@ -151,7 +154,6 @@ private fun Popularity(
             if (products != null) {
                 items(products) {item ->
                     CardProduct(item)
-                    val bitmap =
                     Spacer(Modifier.width(15.dp))
                 }
             }
@@ -209,11 +211,14 @@ private fun TopBar() {
                     modifier = Modifier.size(24.dp)
                 )
             }
+
+            Spacer(Modifier.width(5.dp))
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = Background,
 
-        )
+        ),
+
     )
 }
 
