@@ -1,5 +1,6 @@
 package com.example.matule.presentation.viewmodel
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +27,6 @@ class HomeViewModel: ViewModel() {
             products =  repository.getAllProducts()
         }
     }
-
 
     private fun getCategories() {
         viewModelScope.launch {

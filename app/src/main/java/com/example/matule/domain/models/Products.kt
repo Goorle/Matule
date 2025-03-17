@@ -12,5 +12,4 @@ data class Products(
     @SerialName("created_at")
     val createdAt: String = "",
     val image: String = ""
-
 )

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
+import com.example.matule.presentation.components.CardProduct
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
@@ -63,7 +65,7 @@ fun Home(
                 .padding(horizontal = 15.dp, vertical = 15.dp)
         ) {
             Categories(viewModel)
-            Popularity()
+            Popularity(viewModel)
         }
     }
 }
@@ -114,7 +116,9 @@ private fun Categories(
 }
 
 @Composable
-private fun Popularity() {
+private fun Popularity(
+    viewModel: HomeViewModel
+) {
     Column{
         Row(
           modifier = Modifier
@@ -140,8 +144,17 @@ private fun Popularity() {
             )
         }
 
-        LazyRow {
+        LazyRow(
 
+        ) {
+            val products = viewModel.products
+            if (products != null) {
+                items(products) {item ->
+                    CardProduct(item)
+                    val bitmap =
+                    Spacer(Modifier.width(15.dp))
+                }
+            }
         }
     }
 }
