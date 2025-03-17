@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -38,7 +40,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
 import com.example.matule.presentation.ui.theme.Accent
+import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Hint
+import com.example.matule.presentation.ui.theme.Red
 import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.CardViewModel
 
@@ -67,9 +71,27 @@ fun CardProduct(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(start = 10.dp, end = 8.dp)
+                    .padding(start = 10.dp,top = 7.dp, end = 8.dp)
             ) {
-                Box {
+                Box(
+                    contentAlignment = Alignment.TopStart,
+                ) {
+                    IconButton(
+                        onClick = {
+                            viewModel.isFavorite = !viewModel.isFavorite
+                        },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Background
+                        ),
+                        modifier = Modifier.size(28.dp)
+                    ) {
+                        Icon(
+                            painter = if (viewModel.isFavorite) painterResource(R.drawable.favorite_filled) else painterResource(R.drawable.favorite_outlined),
+                            contentDescription = "favorite",
+                            tint = if(viewModel.isFavorite) Red else TextColor,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
                     val currentBitmap = viewModel.bitmap
                     if (currentBitmap != null) {
                         Image(

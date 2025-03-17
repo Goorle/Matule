@@ -10,28 +10,79 @@ import androidx.lifecycle.viewModelScope
 import com.example.matule.data.Repositories
 import com.example.matule.domain.models.Category
 import com.example.matule.domain.models.Products
+import com.example.matule.domain.models.Promotions
+import io.github.jan.supabase.exceptions.HttpRequestException
+import io.github.jan.supabase.postgrest.exception.PostgrestRestException
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import kotlinx.coroutines.launch
 
 class HomeViewModel: ViewModel() {
     private val repository = Repositories()
     var categories by mutableStateOf<List<Category>?>(null)
+    var promotions by mutableStateOf<List<Promotions>?>(null)
     var products by mutableStateOf<List<Products>?>(null)
 
     init {
         getCategories()
         getProducts()
+        getPromotions()
+    }
+
+    suspend fun getImagePromotion(path: String): Bitmap? {
+        return repository.getImagePromotions(path)
+    }
+
+    private fun getPromotions() {
+        viewModelScope.launch {
+            try {
+                promotions = repository.getPromotions()
+            } catch (e: HttpRequestTimeoutException) {
+                // TODO: Сделать вывод для ошибки  (время ожидания истекло)
+            } catch (e: HttpRequestException) {
+                // TODO: Сделать вывод для ошибки (проблемы с сетью)
+            } catch (e: PostgrestRestException) {
+                // TODO: Сделать вывод для ошибки (проблемы с сетью)
+                when (e.statusCode) {
+
+                }
+            } catch (e: Exception) {
+                Log.e("Error", "${e}")
+            }
+        }
     }
 
     private fun getProducts() {
         viewModelScope.launch {
-            products =  repository.getAllProducts()
+            try {
+                products =  repository.getAllProducts()
+            } catch (e: HttpRequestTimeoutException) {
+              // TODO: Сделать вывод для ошибки  (время ожидания истекло)
+            } catch (e: HttpRequestException) {
+                // TODO: Сделать вывод для ошибки (проблемы с сетью)
+            } catch (e: PostgrestRestException) {
+                // TODO: Сделать вывод для ошибки (проблемы с сетью)
+                when (e.statusCode) {
+
+                }
+            }
         }
     }
 
     private fun getCategories() {
         viewModelScope.launch {
-            val allCategories = repository.getALlCategories()
-            categories = listOf(Category(name = "Все")) + allCategories
+            try {
+                val allCategories = repository.getALlCategories()
+                categories = listOf(Category(name = "Все")) + allCategories
+            } catch (e: HttpRequestTimeoutException) {
+                // TODO: Сделать вывод для ошибки  (время ожидания истекло)
+            } catch (e: HttpRequestException) {
+                // TODO: Сделать вывод для ошибки (проблемы с сетью)
+            } catch (e: PostgrestRestException) {
+                // TODO: Сделать вывод для ошибки (проблемы с сетью)
+                when (e.statusCode) {
+
+                }
+            }
         }
     }
 }
