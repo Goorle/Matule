@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.matule.presentation.screens.Home
 import com.example.matule.presentation.screens.OnBoarding
+import com.example.matule.presentation.screens.Popular
 import com.example.matule.presentation.screens.SignIn
 import com.example.matule.presentation.screens.SplashScreen
 
@@ -16,31 +17,46 @@ fun NavigationApp(
 
     NavHost(
         navController = navHostController,
-        startDestination = Routes.Home.route
+        startDestination = Routes.SplashScreen.route
     ) {
         composable(Routes.SignIn.route) {
             SignIn(
                 onClickSignIn = {
-                    navHostController.navigate(Routes.Home.route)
+                    navHostController.navigate(Routes.Home.route) {
+                        popUpTo(0)
+                    }
                 }
             )
         }
 
         composable(Routes.Home.route) {
             Home(
-                navHostController = navHostController
+                navHostController = navHostController,
+                onClickAllPopular = {
+                    navHostController.navigate(Routes.Popular.route)
+                }
             )
         }
 
         composable(Routes.SplashScreen.route) {
             SplashScreen {
-                navHostController.navigate(Routes.OnBoarding.route)
+                navHostController.navigate(Routes.OnBoarding.route) {
+                    popUpTo(0)
+                }
             }
         }
 
         composable(Routes.OnBoarding.route) {
             OnBoarding {
-                navHostController.navigate(Routes.SignIn.route)
+                navHostController.navigate(Routes.SignIn.route) {
+                    popUpTo(0)
+                }
+            }
+        }
+
+        composable(Routes.Popular.route) {
+            Popular() {
+                navHostController.popBackStack()
             }
         }
     }
