@@ -57,6 +57,7 @@ import com.example.matule.R
 import com.example.matule.domain.font.poppins
 import com.example.matule.presentation.components.BottomAppBar
 import com.example.matule.presentation.components.CardProduct
+import com.example.matule.presentation.navigation.Routes
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
@@ -102,7 +103,9 @@ fun Home(
                 .padding(horizontal = 15.dp, vertical = 15.dp)
         ) {
             item {
-                Categories(viewModel)
+                Categories(viewModel,
+                    navHostController
+                )
             }
 
             item {
@@ -128,7 +131,8 @@ fun Home(
 
 @Composable
 private fun Categories(
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    navHostController: NavHostController
 ) {
     Column {
         Text(
@@ -144,7 +148,9 @@ private fun Categories(
             if (category != null) {
                 items(category) { item ->
                     Button(
-                        onClick = {},
+                        onClick = {
+                            navHostController.navigate(Routes.Listing.route + "/${item.name}")
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Block,
                             contentColor = TextColor

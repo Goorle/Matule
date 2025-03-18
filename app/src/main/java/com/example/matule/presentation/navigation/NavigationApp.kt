@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.matule.presentation.screens.Home
+import com.example.matule.presentation.screens.Listing
 import com.example.matule.presentation.screens.OnBoarding
 import com.example.matule.presentation.screens.Popular
 import com.example.matule.presentation.screens.SignIn
@@ -17,7 +18,7 @@ fun NavigationApp(
 
     NavHost(
         navController = navHostController,
-        startDestination = Routes.SplashScreen.route
+        startDestination = Routes.Home.route
     ) {
         composable(Routes.SignIn.route) {
             SignIn(
@@ -34,7 +35,8 @@ fun NavigationApp(
                 navHostController = navHostController,
                 onClickAllPopular = {
                     navHostController.navigate(Routes.Popular.route)
-                }
+                },
+
             )
         }
 
@@ -58,6 +60,16 @@ fun NavigationApp(
             Popular() {
                 navHostController.popBackStack()
             }
+        }
+
+        composable(Routes.Listing.route + "/{category}") { stackBackEntry ->
+            val category = stackBackEntry.arguments?.getString("category")
+            Listing(
+                onClickBack = {
+                    navHostController.popBackStack()
+                },
+                category = category ?: "Все"
+            )
         }
     }
 }

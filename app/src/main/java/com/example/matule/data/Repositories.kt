@@ -37,6 +37,19 @@ class Repositories {
         return client.from("products").select().decodeList<Products>()
     }
 
+    suspend fun getProductsWithCategories(categoryName: String): List<Products> {
+        val category = client.from("category").select{
+            filter {
+                Category::name eq categoryName
+            }
+        }.decodeSingle<Category>()
+        return client.from("products").select{
+            filter {
+                Products::category eq category.id
+            }
+        }.decodeList<Products>()
+    }
+
     suspend fun getPromotions(): List<Promotions> {
         return client.from("promotions").select().decodeList<Promotions>()
     }
