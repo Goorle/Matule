@@ -25,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -50,8 +51,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
+import com.example.matule.presentation.components.BottomAppBar
 import com.example.matule.presentation.components.CardProduct
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
@@ -62,28 +66,57 @@ import com.example.matule.presentation.viewmodel.HomeViewModel
 
 @Composable
 fun Home(
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel = viewModel(),
+    navHostController: NavHostController
 ) {
     Scaffold(
         topBar = {
             TopBar()
-        }
+        },
+        bottomBar = {
+            BottomAppBar(navHostController)
+        },
+        floatingActionButton = {
+            IconButton(
+                onClick = {},
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = Accent
+                ),
+                modifier = Modifier.size(56.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.bag),
+                    contentDescription = null,
+                    tint = Block,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        },
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
                 .background(Background)
                 .padding(horizontal = 15.dp, vertical = 15.dp)
         ) {
-            Categories(viewModel)
+            item {
+                Categories(viewModel)
+            }
 
-            Spacer(Modifier.height(25.dp))
+            item {
+                Spacer(Modifier.height(25.dp))
+                Popularity(viewModel)
+            }
 
-            Popularity(viewModel)
+            item {
+                Spacer(Modifier.height(25.dp))
+                Promotions(viewModel)
+            }
 
-            Spacer(Modifier.height(25.dp))
-            Promotions(viewModel)
+            item {
+                Spacer(Modifier.height(60.dp))
+            }
         }
     }
 }
@@ -299,8 +332,9 @@ private fun TopBar() {
     )
 }
 
+
 @Preview(showBackground = true)
 @Composable
 private fun HomePreview() {
-    Home()
+    Home(navHostController = rememberNavController())
 }
