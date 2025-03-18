@@ -67,6 +67,7 @@ import com.example.matule.presentation.viewmodel.HomeViewModel
 @Composable
 fun Home(
     viewModel: HomeViewModel = viewModel(),
+    onClickAllPopular: () -> Unit,
     navHostController: NavHostController
 ) {
     Scaffold(
@@ -106,7 +107,10 @@ fun Home(
 
             item {
                 Spacer(Modifier.height(25.dp))
-                Popularity(viewModel)
+                Popularity(
+                    viewModel,
+                    onClickAllPopular
+                )
             }
 
             item {
@@ -168,7 +172,8 @@ private fun Categories(
 
 @Composable
 private fun Popularity(
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    onClickAllPopular: () -> Unit
 ) {
     Column{
         Row(
@@ -190,7 +195,7 @@ private fun Popularity(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.clickable{
-
+                    onClickAllPopular()
                 }
             )
         }
@@ -336,5 +341,6 @@ private fun TopBar() {
 @Preview(showBackground = true)
 @Composable
 private fun HomePreview() {
-    Home(navHostController = rememberNavController())
+    Home(navHostController = rememberNavController(),
+        onClickAllPopular = {})
 }
