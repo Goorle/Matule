@@ -27,7 +27,9 @@ fun NavigationApp(
         }
 
         composable(Routes.Home.route) {
-            Home()
+            Home(
+                navHostController = navHostController
+            )
         }
 
         composable(Routes.SplashScreen.route) {
