@@ -54,10 +54,6 @@ fun Listing(
     onClickBack: () -> Unit,
     category: String
 ) {
-    LaunchedEffect(category) {
-        viewModel.putCurrentCategory(category)
-        viewModel.getProductsByCategory()
-    }
     Scaffold(
         topBar = {
             TopBar(
@@ -90,15 +86,8 @@ fun Listing(
                     verticalArrangement = Arrangement.spacedBy(15.dp),
                     horizontalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
-                    val currentProducts = viewModel.products
-                    if (currentProducts != null) {
-                        repeat(4) {  items(currentProducts) { item ->
-                            CardProduct(item)
-                        }
-                        }
-                    } else {
-                        item { CircularProgressIndicator() }
-                    }
+
+
                 }
             }
         }
@@ -119,41 +108,7 @@ private fun Categories(
         )
         Spacer(Modifier.height(10.dp))
         LazyRow {
-            val category = viewModel.categories
-            if (category != null) {
-                items(category) { item ->
-                    var buttonColors: ButtonColors = if (viewModel.currentCategory == item.name) {
-                        ButtonDefaults.buttonColors(
-                            containerColor = Accent,
-                            contentColor = Block)
-                    } else {
-                        ButtonDefaults.buttonColors(
-                            containerColor = Block,
-                            contentColor = TextColor
-                        )
-                    }
-                    Button(
-                        onClick = {
-                            viewModel.currentCategory = item.name
-                            viewModel.getProductsByCategory()
-                        },
-                        colors = buttonColors,
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.height(40.dp).width(100.dp)
-                    ) {
-                        Text(
-                            text = item.name,
-                            fontFamily = poppins,
-                            fontSize = 12.sp,
-                        )
-                    }
-                    Spacer(Modifier.width(15.dp))
-                }
-            } else {
-                item {
-                    CircularProgressIndicator(color = Accent)
-                }
-            }
+
         }
     }
 }

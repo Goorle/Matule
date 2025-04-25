@@ -13,10 +13,4 @@ class CardViewModel: ViewModel() {
     private val repository = Repositories()
     var isFavorite by mutableStateOf(false)
     var bitmap by mutableStateOf<Bitmap?>(null)
-
-    fun getImage(path: String) {
-        viewModelScope.launch {
-            bitmap = repository.getImage(path)
-        }
-    }
 }

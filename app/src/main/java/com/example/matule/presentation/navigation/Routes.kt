@@ -10,4 +10,5 @@ sealed class Routes(val route: String) {
     object Profile: Routes("Profile")
     object Popular: Routes("Popular")
     object Listing: Routes("Listing")
+    object Detail: Routes("Detail")
 }

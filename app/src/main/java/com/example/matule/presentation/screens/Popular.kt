@@ -66,23 +66,7 @@ fun Popular(
                 verticalArrangement = Arrangement.spacedBy(15.dp),
                 horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                val currentProducts = viewModel.popularItems
-                if (currentProducts != null) {
-                    repeat(3) {
-                        items(currentProducts) { item ->
-                            CardProduct(item)
-                        }
-                    }
-                } else {
-                    item {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(color = Accent)
-                        }
-                    }
-                }
+
             }
         }
     }

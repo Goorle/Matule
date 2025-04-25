@@ -32,13 +32,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.matule.domain.models.Products
 import com.example.matule.presentation.ui.theme.Block
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
+import com.example.matule.domain.models.Publication
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Hint
@@ -48,15 +48,15 @@ import com.example.matule.presentation.viewmodel.CardViewModel
 
 @Composable
 fun CardProduct(
-    product: Products,
-    viewModel: CardViewModel = viewModel(key = "card_${product.id}")
+    publication: Publication,
+    viewModel: CardViewModel = viewModel(key = "card_${publication.id}")
 ) {
     val shapeButton = RoundedCornerShape(
         topStart = 16.dp,
         bottomEnd = 16.dp
     )
 
-    viewModel.getImage(product.image)
+    //viewModel.getImage(product.image)
 
     Card(
 
@@ -115,7 +115,7 @@ fun CardProduct(
 
                 )
                 Text(
-                    text = product.name,
+                    text = publication.title,
                     fontFamily = poppins,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -125,7 +125,7 @@ fun CardProduct(
                 Spacer(Modifier.height(5.dp))
 
                 Text(
-                    text = "₽${product.cost}",
+                    text = "₽${publication.price}",
                     fontFamily = poppins,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
@@ -159,10 +159,10 @@ fun CardProduct(
 @Composable
 private fun CardPreview() {
     CardProduct(
-        Products(
-            name = "Nike air Max",
-            cost = 752.0,
-            category = "Outdoor",
+        Publication(
+            title = "Газета для вас",
+            price = 752.0f,
+            publicationType = "Газета"
         )
     )
 }
