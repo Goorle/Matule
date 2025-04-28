@@ -47,4 +47,5 @@
     <string name="last_name">Фамилия</string>
     <string name="save_now">Сохранить</string>
     <string name="best_seller">Популярное</string>
+    <string name="newspaper">Газеты</string>
 </resources>
