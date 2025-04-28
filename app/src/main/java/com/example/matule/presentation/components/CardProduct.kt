@@ -53,7 +53,9 @@ fun CardProduct(
             containerColor = Block
         ),
         shape = RoundedCornerShape(16.dp),
-        modifier = Modifier.width(160.dp)
+        modifier = Modifier
+            .width(160.dp),
+        onClick = {}
     ) {
         Box(
             contentAlignment = Alignment.BottomEnd
