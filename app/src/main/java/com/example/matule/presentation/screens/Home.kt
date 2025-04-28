@@ -58,7 +58,7 @@ import com.example.matule.presentation.viewmodel.HomeViewModel
 @Composable
 fun Home(
     viewModel: HomeViewModel = viewModel(),
-    onClickAllPopular: () -> Unit,
+    onClickCard: () -> Unit,
     navHostController: NavHostController
 ) {
     Scaffold(
@@ -96,7 +96,10 @@ fun Home(
                 Box(
                     modifier = Modifier.height(1200.dp)
                 ) {
-                    NewspaperRow(viewModel)
+                    NewspaperRow(
+                        viewModel,
+                        onClickCard
+                        )
                 }
             }
         }
@@ -104,7 +107,10 @@ fun Home(
 }
 
 @Composable
-private fun NewspaperRow(viewModel: HomeViewModel) {
+private fun NewspaperRow(
+    viewModel: HomeViewModel,
+    onClickCard: () -> Unit
+    ) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -148,7 +154,10 @@ private fun NewspaperRow(viewModel: HomeViewModel) {
                     image = item.publication.image,
                     publicationData = item.publication.publicationDate
                 )
-                CardProduct(card)
+                CardProduct(
+                    cardData = card,
+                    navigateTo = onClickCard
+                    )
             }
         }
     }
@@ -220,5 +229,7 @@ private fun TopBar() {
 @Composable
 private fun HomePreview() {
     Home(navHostController = rememberNavController(),
-        onClickAllPopular = {})
+        onClickCard = {},
+
+      )
 }

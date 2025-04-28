@@ -34,10 +34,9 @@ fun NavigationApp(
         composable(Routes.Home.route) {
             Home(
                 navHostController = navHostController,
-                onClickAllPopular = {
-                    navHostController.navigate(Routes.Popular.route)
-                },
-
+                onClickCard = {
+                    navHostController.navigate(Routes.Detail.route)
+                }
             )
         }
 

@@ -41,6 +41,7 @@ import com.example.matule.presentation.viewmodel.CardViewModel
 @Composable
 fun CardProduct(
     cardData: CardData,
+    navigateTo: () -> Unit,
     viewModel: CardViewModel = viewModel(key = "card_${cardData.publicationId}")
 ) {
     LaunchedEffect(Unit) {
@@ -55,7 +56,7 @@ fun CardProduct(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .width(160.dp),
-        onClick = {}
+        onClick = navigateTo
     ) {
         Box(
             contentAlignment = Alignment.BottomEnd
@@ -134,7 +135,8 @@ fun CardProduct(
 private fun CardPreview() {
     CardProduct(
         CardData(
-            name = "Газета для вас"
-        )
+            name = "Газета для вас",
+        ),
+        navigateTo = {}
     )
 }
