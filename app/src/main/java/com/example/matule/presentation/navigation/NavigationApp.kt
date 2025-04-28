@@ -34,9 +34,6 @@ fun NavigationApp(
         composable(Routes.Home.route) {
             Home(
                 navHostController = navHostController,
-                onClickCard = {
-                    navHostController.navigate(Routes.Detail.route)
-                }
             )
         }
 
@@ -57,7 +54,7 @@ fun NavigationApp(
         }
 
         composable(Routes.Popular.route) {
-            Popular() {
+            Popular {
                 navHostController.popBackStack()
             }
         }
@@ -72,8 +69,15 @@ fun NavigationApp(
             )
         }
 
-        composable(Routes.Detail.route) {
-            DetailsScreen()
+        composable(Routes.Detail.route + "/{id}") { stackBackEntry ->
+            val productId = stackBackEntry.arguments?.getString("id")
+
+            DetailsScreen(
+                itemId = productId,
+                onClickBack = {
+                    navHostController.popBackStack()
+                }
+            )
         }
     }
 }

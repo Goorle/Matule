@@ -30,9 +30,12 @@ import com.example.matule.presentation.ui.theme.Block
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
 import com.example.matule.domain.models.CardData
+import com.example.matule.presentation.navigation.Routes
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Hint
 import com.example.matule.presentation.ui.theme.Red
@@ -41,7 +44,7 @@ import com.example.matule.presentation.viewmodel.CardViewModel
 @Composable
 fun CardProduct(
     cardData: CardData,
-    navigateTo: () -> Unit,
+    navHostController: NavHostController,
     viewModel: CardViewModel = viewModel(key = "card_${cardData.publicationId}")
 ) {
     LaunchedEffect(Unit) {
@@ -56,7 +59,9 @@ fun CardProduct(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .width(160.dp),
-        onClick = navigateTo
+        onClick = {
+            navHostController.navigate(Routes.Detail.route + "/" + cardData.publicationId)
+        }
     ) {
         Box(
             contentAlignment = Alignment.BottomEnd
@@ -137,6 +142,6 @@ private fun CardPreview() {
         CardData(
             name = "Газета для вас",
         ),
-        navigateTo = {}
+        navHostController = rememberNavController()
     )
 }
