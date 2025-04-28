@@ -22,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,7 +58,9 @@ fun CardProduct(
         bottomEnd = 16.dp
     )
 
-//    viewModel.getImage(product.image)
+    LaunchedEffect(Unit) {
+        viewModel.getImage(cardData.image)
+    }
 
     Card(
 
@@ -76,24 +79,24 @@ fun CardProduct(
             ) {
                 Box(
                     contentAlignment = Alignment.TopStart,
+                    modifier = Modifier.height(200.dp),
                 ) {
                     val currentBitmap = viewModel.bitmap
                     if (currentBitmap != null) {
                         Image(
                             bitmap = currentBitmap.asImageBitmap(),
                             contentDescription = "Product",
-                            modifier = Modifier.fillMaxWidth().height(100.dp),
-                            contentScale = ContentScale.Fit
-
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(R.drawable.dlya_vas_1_image),
-                            contentDescription = "Product",
                             modifier = Modifier.fillMaxWidth(),
                             contentScale = ContentScale.FillWidth
 
                         )
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = Accent, modifier = Modifier.size(54.dp))
+                        }
                     }
                     IconButton(
                         onClick = {
@@ -129,14 +132,7 @@ fun CardProduct(
 
                 Spacer(Modifier.height(5.dp))
 
-//                Text(
-//                    text = "₽${publication.price}",
-//                    fontFamily = poppins,
-//                    fontSize = 14.sp,
-//                    fontWeight = FontWeight.Medium,
-//                    color = TextColor
-//                )
-                Spacer(Modifier.height(5.dp))
+
             }
             IconButton(
                 onClick = {},
