@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
+import com.example.matule.domain.models.CardData
 import com.example.matule.domain.models.Publication
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
@@ -48,15 +49,15 @@ import com.example.matule.presentation.viewmodel.CardViewModel
 
 @Composable
 fun CardProduct(
-    publication: Publication,
-    viewModel: CardViewModel = viewModel(key = "card_${publication.id}")
+    cardData: CardData,
+    viewModel: CardViewModel = viewModel(key = "card_${cardData.publicationId}")
 ) {
     val shapeButton = RoundedCornerShape(
         topStart = 16.dp,
         bottomEnd = 16.dp
     )
 
-    //viewModel.getImage(product.image)
+//    viewModel.getImage(product.image)
 
     Card(
 
@@ -71,27 +72,11 @@ fun CardProduct(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(start = 10.dp,top = 7.dp, end = 8.dp)
+                    .padding(start = 10.dp,top = 10.dp, end = 10.dp)
             ) {
                 Box(
                     contentAlignment = Alignment.TopStart,
                 ) {
-                    IconButton(
-                        onClick = {
-                            viewModel.isFavorite = !viewModel.isFavorite
-                        },
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = Background
-                        ),
-                        modifier = Modifier.size(28.dp)
-                    ) {
-                        Icon(
-                            painter = if (viewModel.isFavorite) painterResource(R.drawable.favorite_filled) else painterResource(R.drawable.favorite_outlined),
-                            contentDescription = "favorite",
-                            tint = if(viewModel.isFavorite) Red else TextColor,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
                     val currentBitmap = viewModel.bitmap
                     if (currentBitmap != null) {
                         Image(
@@ -102,7 +87,27 @@ fun CardProduct(
 
                         )
                     } else {
-                        CircularProgressIndicator(Modifier.height(100.dp), color = Accent)
+                        Image(
+                            painter = painterResource(R.drawable.dlya_vas_1_image),
+                            contentDescription = "Product",
+                            modifier = Modifier.fillMaxWidth(),
+                            contentScale = ContentScale.FillWidth
+
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            viewModel.isFavorite = !viewModel.isFavorite
+                        },
+                        modifier = Modifier.size(32.dp).padding(start = 5.dp, top = 7.dp),
+
+                    ) {
+                        Icon(
+                            painter = if (viewModel.isFavorite) painterResource(R.drawable.favorite_filled) else painterResource(R.drawable.favorite_outlined),
+                            contentDescription = "favorite",
+                            tint = if(viewModel.isFavorite) Red else Red,
+                            modifier = Modifier.size(32.dp)
+                        )
                     }
                 }
                 Spacer(Modifier.height(10.dp))
@@ -115,7 +120,7 @@ fun CardProduct(
 
                 )
                 Text(
-                    text = publication.title,
+                    text = cardData.name,
                     fontFamily = poppins,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -124,13 +129,13 @@ fun CardProduct(
 
                 Spacer(Modifier.height(5.dp))
 
-                Text(
-                    text = "₽${publication.price}",
-                    fontFamily = poppins,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = TextColor
-                )
+//                Text(
+//                    text = "₽${publication.price}",
+//                    fontFamily = poppins,
+//                    fontSize = 14.sp,
+//                    fontWeight = FontWeight.Medium,
+//                    color = TextColor
+//                )
                 Spacer(Modifier.height(5.dp))
             }
             IconButton(
@@ -159,10 +164,8 @@ fun CardProduct(
 @Composable
 private fun CardPreview() {
     CardProduct(
-        Publication(
-            title = "Газета для вас",
-            price = 752.0f,
-            publicationType = "Газета"
+        CardData(
+            name = "Газета для вас"
         )
     )
 }

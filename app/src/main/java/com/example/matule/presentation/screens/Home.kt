@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,7 +38,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
+import com.example.matule.domain.models.CardData
 import com.example.matule.presentation.components.BottomAppBar
+import com.example.matule.presentation.components.CardProduct
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
@@ -82,83 +85,58 @@ fun Home(
                 .padding(horizontal = 15.dp, vertical = 15.dp)
         ) {
             item {
-                Categories(viewModel,
-                    navHostController
+                NewspaperRow(
+                    viewModel
                 )
-            }
-
-            item {
-                Spacer(Modifier.height(25.dp))
-                Popularity(
-                    viewModel,
-                    onClickAllPopular
-                )
-            }
-
-
-            item {
-                Spacer(Modifier.height(60.dp))
             }
         }
     }
 }
 
-
 @Composable
-private fun Categories(
-    viewModel: HomeViewModel,
-    navHostController: NavHostController
-) {
+private fun NewspaperRow(viewModel: HomeViewModel) {
     Column {
-        Text(
-            text = stringResource(R.string.category),
-            fontFamily = poppins,
-            color = TextColor,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp
-        )
-        Spacer(Modifier.height(10.dp))
-        LazyRow {
-
-        }
-    }
-}
-
-@Composable
-private fun Popularity(
-    viewModel: HomeViewModel,
-    onClickAllPopular: () -> Unit
-) {
-    Column{
         Row(
-          modifier = Modifier
-              .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = stringResource(R.string.popular),
+                text = "Газеты",
+                fontSize = 24.sp,
                 fontFamily = poppins,
+                lineHeight = 24.sp,
                 color = TextColor,
-                fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
+
             Text(
-                text = stringResource(R.string.all),
+                text = "Все",
+                fontSize = 16.sp,
                 fontFamily = poppins,
+                lineHeight = 24.sp,
                 color = Accent,
-                fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.clickable{
-                    onClickAllPopular()
+
                 }
             )
         }
 
-        Spacer(Modifier.height(10.dp))
-        LazyRow(
+        Spacer(Modifier.height(15.dp))
 
-        ) {
-
+        LazyRow {
+            items(
+                viewModel.getNewsPaper()
+            ) { item ->
+                val card = CardData(
+                    publicationId = item.publication.id,
+                    name = item.publication.title,
+                    image = item.publication.image,
+                    publicationData = item.publication.publicationDate
+                )
+                CardProduct(card)
+                Spacer(Modifier.width(15.dp))
+            }
         }
     }
 }

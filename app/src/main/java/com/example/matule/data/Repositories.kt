@@ -3,12 +3,15 @@ package com.example.matule.data
 
 
 import android.util.Log
-import com.example.matule.domain.models.BookDetails
+import com.example.matule.domain.models.NewspaperResponse
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.storage.storage
+import io.github.jan.supabase.storage.upload
+import kotlinx.serialization.json.Json
 
 class Repositories {
     private val client = Database.supabase
@@ -21,16 +24,19 @@ class Repositories {
         }
     }
 
+    suspend fun getFileFromStorage(bucket: String, file: String): ByteArray {
+        return client.storage.from(bucket).downloadPublic(file)
+    }
+
+
     fun getCurrentUser(): UserInfo? {
         return client.auth.currentUserOrNull()
     }
 
-    suspend fun getBooksWithDetails() {
-        val data =  client.from("Book").select(
-            Columns.raw("book_id, author, Publication(title, image), Genre(name)")
+    suspend fun getNewsPapersWithDetails(): List<NewspaperResponse> {
+        val data =  client.from("Newspaper").select(
+            Columns.raw("newspaper_id, Publication(id ,title, publication_date, image)")
         )
-
-        val book = data.decodeAs<BookDetails>()
-        Log.d("DATA: ", "$book")
+        return Json.decodeFromString(data.data)
     }
 }

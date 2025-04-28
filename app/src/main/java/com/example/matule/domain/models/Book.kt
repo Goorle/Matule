@@ -1,7 +1,9 @@
 package com.example.matule.domain.models
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Book(
     @SerialName("book_id")
     val bookId: String = "",

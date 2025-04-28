@@ -25,18 +25,17 @@ class SignInViewModel: ViewModel() {
     var visualPassword by mutableStateOf<VisualTransformation>(PasswordVisualTransformation())
 
     suspend fun signIn(email: String, password: String) {
-        repositories.getBooksWithDetails()
         isLoading = true
         try {
             repositories.signInUser(email, password)
             idUser = repositories.getCurrentUser()
-        } catch (e: RestException) {
+        } catch (_: RestException) {
             textError = "Неверный логин или пароль"
             visibleDialog = true
-        } catch (e: HttpRequestTimeoutException) {
+        } catch (_: HttpRequestTimeoutException) {
             textError = "Время ожидания закончилось"
             visibleDialog = true
-        } catch (e: HttpRequestException) {
+        } catch (_: HttpRequestException) {
             textError = "Неполадки с сетью"
             visibleDialog = true
         } finally {
