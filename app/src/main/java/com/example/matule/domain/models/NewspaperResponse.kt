@@ -18,5 +18,6 @@ data class PublicationData(
     val title: String,
     @SerialName("publication_date")
     val publicationDate: String,
-    val image: String?
+    val image: String?,
+    val description: String
 )

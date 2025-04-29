@@ -19,7 +19,7 @@ fun NavigationApp(
 
     NavHost(
         navController = navHostController,
-        startDestination = Routes.Home.route
+        startDestination = Routes.SplashScreen.route
     ) {
         composable(Routes.SignIn.route) {
             SignIn(
@@ -34,10 +34,6 @@ fun NavigationApp(
         composable(Routes.Home.route) {
             Home(
                 navHostController = navHostController,
-                onClickAllPopular = {
-                    navHostController.navigate(Routes.Popular.route)
-                },
-
             )
         }
 
@@ -58,7 +54,7 @@ fun NavigationApp(
         }
 
         composable(Routes.Popular.route) {
-            Popular() {
+            Popular {
                 navHostController.popBackStack()
             }
         }
@@ -73,8 +69,15 @@ fun NavigationApp(
             )
         }
 
-        composable(Routes.Detail.route) {
-            DetailsScreen()
+        composable(Routes.Detail.route + "/{id}") { stackBackEntry ->
+            val productId = stackBackEntry.arguments?.getString("id")
+
+            DetailsScreen(
+                itemId = productId,
+                onClickBack = {
+                    navHostController.popBackStack()
+                }
+            )
         }
     }
 }

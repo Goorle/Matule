@@ -1,11 +1,8 @@
 package com.example.matule.presentation.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,45 +16,40 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.matule.presentation.ui.theme.Block
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
 import com.example.matule.domain.models.CardData
-import com.example.matule.domain.models.Publication
+import com.example.matule.presentation.navigation.Routes
 import com.example.matule.presentation.ui.theme.Accent
-import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Hint
 import com.example.matule.presentation.ui.theme.Red
-import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.CardViewModel
 
 @Composable
 fun CardProduct(
     cardData: CardData,
+    navHostController: NavHostController,
     viewModel: CardViewModel = viewModel(key = "card_${cardData.publicationId}")
 ) {
-    val shapeButton = RoundedCornerShape(
-        topStart = 16.dp,
-        bottomEnd = 16.dp
-    )
-
-//    viewModel.getImage(product.image)
+    LaunchedEffect(Unit) {
+        viewModel.getImage(cardData.image)
+    }
 
     Card(
 
@@ -65,7 +57,11 @@ fun CardProduct(
             containerColor = Block
         ),
         shape = RoundedCornerShape(16.dp),
-        modifier = Modifier.width(160.dp)
+        modifier = Modifier
+            .width(160.dp),
+        onClick = {
+            navHostController.navigate(Routes.Detail.route + "/" + cardData.publicationId)
+        }
     ) {
         Box(
             contentAlignment = Alignment.BottomEnd
@@ -76,24 +72,24 @@ fun CardProduct(
             ) {
                 Box(
                     contentAlignment = Alignment.TopStart,
+                    modifier = Modifier.height(200.dp),
                 ) {
                     val currentBitmap = viewModel.bitmap
                     if (currentBitmap != null) {
                         Image(
                             bitmap = currentBitmap.asImageBitmap(),
                             contentDescription = "Product",
-                            modifier = Modifier.fillMaxWidth().height(100.dp),
-                            contentScale = ContentScale.Fit
-
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(R.drawable.dlya_vas_1_image),
-                            contentDescription = "Product",
                             modifier = Modifier.fillMaxWidth(),
                             contentScale = ContentScale.FillWidth
 
                         )
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = Accent, modifier = Modifier.size(54.dp))
+                        }
                     }
                     IconButton(
                         onClick = {
@@ -112,7 +108,10 @@ fun CardProduct(
                 }
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    text = stringResource(R.string.best_seller).uppercase(),
+                    text = cardData.publicationData
+                        .split("-")
+                        .reversed()
+                        .joinToString("."),
                     fontFamily = poppins,
                     fontSize = 12.sp,
                     color = Accent,
@@ -128,30 +127,6 @@ fun CardProduct(
                 )
 
                 Spacer(Modifier.height(5.dp))
-
-//                Text(
-//                    text = "₽${publication.price}",
-//                    fontFamily = poppins,
-//                    fontSize = 14.sp,
-//                    fontWeight = FontWeight.Medium,
-//                    color = TextColor
-//                )
-                Spacer(Modifier.height(5.dp))
-            }
-            IconButton(
-                onClick = {},
-                modifier = Modifier
-                    .size(34.dp)
-                    .clip(shapeButton)
-                    .background(Accent),
-
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.add),
-                    contentDescription = null,
-                    tint = Block,
-                    modifier = Modifier.size(24.dp)
-                )
             }
         }
     }
@@ -165,7 +140,8 @@ fun CardProduct(
 private fun CardPreview() {
     CardProduct(
         CardData(
-            name = "Газета для вас"
-        )
+            name = "Газета для вас",
+        ),
+        navHostController = rememberNavController()
     )
 }
