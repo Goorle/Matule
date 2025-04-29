@@ -19,7 +19,7 @@ fun NavigationApp(
 
     NavHost(
         navController = navHostController,
-        startDestination = Routes.Home.route
+        startDestination = Routes.SplashScreen.route
     ) {
         composable(Routes.SignIn.route) {
             SignIn(

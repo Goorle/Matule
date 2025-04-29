@@ -46,6 +46,7 @@ import com.example.matule.presentation.ui.theme.SubTextDark
 import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.SignInViewModel
 import kotlinx.coroutines.launch
+import javax.xml.parsers.DocumentBuilder
 
 @Composable
 fun SignIn(
@@ -92,9 +93,8 @@ fun SignIn(
         }
 
 
-        Column(
 
-        ) {
+        Column{
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
