@@ -41,9 +41,13 @@ class Repositories {
         return Json.decodeFromString(data.data)
     }
 
+    fun getUrlFile(bucket: String, file: String): String{
+        return client.storage.from(bucket).publicUrl(file)
+    }
+
     suspend fun getPublicationById(publicationId: String): NewspaperResponse {
         val data = client.from("Newspaper").select(
-            Columns.raw("newspaper_id, Publication(id ,title, publication_date, image, description)")
+            Columns.raw("newspaper_id, Publication(id ,title, publication_date, image, description, point_file)")
         ){
             filter {
                 Newspaper::publicationId eq publicationId

@@ -69,5 +69,6 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:postgrest-kt:3.1.2")
     implementation("io.ktor:ktor-client-android:3.1.1")
 
+    implementation("io.github.afreakyelf:Pdf-Viewer:2.3.4")
 
 }

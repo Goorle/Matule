@@ -59,123 +59,140 @@ fun DetailsScreen(
 
     Scaffold(
         topBar = {
-            TopBar(
-                onClickBack = onClickBack
-            )
+            if (!viewModel.visiblePDF){
+                TopBar(
+                    onClickBack = onClickBack
+                )
+            }
         },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            Button(
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Accent,
-                    contentColor = Block
-                ),
-                modifier = Modifier.height(50.dp).fillMaxWidth(0.8f),
-                shape = RoundedCornerShape(15.dp)
-            ) {
-                Text(
-                    text = "Читать",
-                    fontFamily = poppins,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+            if (!viewModel.visiblePDF) {
+                Button(
+                    onClick = {
+                        viewModel.getUrlPDF()
+                        viewModel.visiblePDF = true
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Accent,
+                        contentColor = Block
+                    ),
+                    modifier = Modifier.height(50.dp).fillMaxWidth(0.8f),
+                    shape = RoundedCornerShape(15.dp)
+                ) {
+                    Text(
+                        text = "Читать",
+                        fontFamily = poppins,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
     ) { innerPadding ->
         val currentItem = viewModel.item
-        if (currentItem != null){
+        if (currentItem != null) {
 
-            Box(modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .background(Background)) {
-                LazyColumn(
-                    modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp).fillMaxWidth(),
+            if (viewModel.visiblePDF) {
+                Box(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    val currentBitmap = viewModel.bitmap
-                    if (currentBitmap != null) {
-                        item {
-                            Text(
-                                text = currentItem.publication.title,
-                                fontSize = 26.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                lineHeight = 26.sp,
-                                color = TextColor,
-                                fontFamily = poppins
-                            )
-
-                            Text(
-                                text = "Дата публикации: " + currentItem.publication.publicationDate
-                                    .split("-")
-                                    .reversed()
-                                    .joinToString("."),
-                                fontSize = 14.sp,
-                                fontFamily = poppins,
-                                color = Hint,
-                                fontWeight = FontWeight.Medium
-                            )
-
-                            Spacer(Modifier.height(15.dp))
-
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Image(
-                                    bitmap = currentBitmap.asImageBitmap(),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.9f)
-                                        .clip(RoundedCornerShape(15.dp))
-                                    ,
-                                    contentScale = ContentScale.FillWidth,
-
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(15.dp))
-
-                            Text(
-                                text = "Описание",
-                                fontFamily = poppins,
-                                fontSize = 18.sp,
-                                color = TextColor,
-                                fontWeight = FontWeight.SemiBold
-                            )
-
-                            Text(
-                                text = currentItem.publication.description,
-                                fontSize = 14.sp,
-                                color = Hint,
-                                lineHeight = 24.sp,
-                                maxLines = viewModel.linesDescription,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.clickable{
-                                    viewModel.changeLines()
-                                }
-                            )
-
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.CenterEnd
-                            ) {
+                    MyPdfScreenFromUrl(viewModel.urlPDF, onClickBack)
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                        .background(Background)
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp)
+                            .fillMaxWidth(),
+                    ) {
+                        val currentBitmap = viewModel.bitmap
+                        if (currentBitmap != null) {
+                            item {
                                 Text(
-                                    text = "Подробнее",
-                                    fontFamily = poppins,
+                                    text = currentItem.publication.title,
+                                    fontSize = 26.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    lineHeight = 26.sp,
+                                    color = TextColor,
+                                    fontFamily = poppins
+                                )
+
+                                Text(
+                                    text = "Дата публикации: " + currentItem.publication.publicationDate
+                                        .split("-")
+                                        .reversed()
+                                        .joinToString("."),
                                     fontSize = 14.sp,
-                                    color = Accent,
-                                    modifier = Modifier.clickable{
+                                    fontFamily = poppins,
+                                    color = Hint,
+                                    fontWeight = FontWeight.Medium
+                                )
+
+                                Spacer(Modifier.height(15.dp))
+
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Image(
+                                        bitmap = currentBitmap.asImageBitmap(),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.9f)
+                                            .clip(RoundedCornerShape(15.dp)),
+                                        contentScale = ContentScale.FillWidth,
+
+                                        )
+                                }
+
+                                Spacer(modifier = Modifier.height(15.dp))
+
+                                Text(
+                                    text = "Описание",
+                                    fontFamily = poppins,
+                                    fontSize = 18.sp,
+                                    color = TextColor,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+
+                                Text(
+                                    text = currentItem.publication.description,
+                                    fontSize = 14.sp,
+                                    color = Hint,
+                                    lineHeight = 24.sp,
+                                    maxLines = viewModel.linesDescription,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.clickable {
                                         viewModel.changeLines()
                                     }
                                 )
-                            }
 
-                            Spacer(Modifier.height(100.dp))
-                        }
-                    } else {
-                        item {
-                            CircularProgressIndicator(color = Accent)
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.CenterEnd
+                                ) {
+                                    Text(
+                                        text = "Подробнее",
+                                        fontFamily = poppins,
+                                        fontSize = 14.sp,
+                                        color = Accent,
+                                        modifier = Modifier.clickable {
+                                            viewModel.changeLines()
+                                        }
+                                    )
+                                }
+
+                                Spacer(Modifier.height(100.dp))
+                            }
+                        } else {
+                            item {
+                                CircularProgressIndicator(color = Accent)
+                            }
                         }
                     }
                 }
