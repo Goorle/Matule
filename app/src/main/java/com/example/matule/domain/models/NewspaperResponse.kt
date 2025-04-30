@@ -19,5 +19,7 @@ data class PublicationData(
     @SerialName("publication_date")
     val publicationDate: String,
     val image: String?,
-    val description: String
+    val description: String,
+    @SerialName("point_file")
+    val pointFile: String = ""
 )

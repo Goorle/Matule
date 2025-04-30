@@ -2,6 +2,7 @@ package com.example.matule.presentation.viewmodel
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -20,6 +21,9 @@ class DetailsViewModel: ViewModel() {
 
     var linesDescription by mutableStateOf(3)
 
+    var visiblePDF by mutableStateOf(false)
+
+    var urlPDF by mutableStateOf("")
 
     fun getItem(publicationId: String) {
         viewModelScope.launch {
@@ -38,6 +42,18 @@ class DetailsViewModel: ViewModel() {
                 val byteArray = repository.getFileFromStorage(bucket, file)
                 bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
             }
+        }
+    }
+
+    fun getUrlPDF() {
+        val itemBuff = item
+        if (itemBuff != null && itemBuff.publication.pointFile.isNotEmpty()) {
+            val filePath = itemBuff.publication.pointFile
+            val list = filePath.split("/")
+            val bucket = list[0]
+            val file = list[1]
+
+            urlPDF = repository.getUrlFile(bucket, file)
         }
     }
 
