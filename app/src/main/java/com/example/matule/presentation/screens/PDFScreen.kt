@@ -4,19 +4,24 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,11 +37,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.matule.R
 import com.example.matule.domain.font.poppins
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Block
@@ -60,8 +69,9 @@ fun PDFViewer(
         resource = VueResourceType.Remote(
             url,
             fileType = VueFileType.PDF
-        )
+        ),
     )
+
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize(),
@@ -80,9 +90,9 @@ fun PDFViewer(
                     coroutineScope = coroutineScope,
                     containerSize = containerSize,
                     isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT,
-                    customResource = null
+                    customResource = null,
                 )
-            } catch (e: IllegalStateException) {
+            } catch (e: Exception) {
                 Toast.makeText(context, "$e", Toast.LENGTH_LONG).show()
             }
 
@@ -92,7 +102,6 @@ fun PDFViewer(
         when (vueLoadState) {
             is VueLoadState.NoDocument -> {
                 Button(onClick = {
-
                 }) {
                     Text(text = "Import Document")
                 }
@@ -125,7 +134,10 @@ fun PDFViewer(
             }
 
             is VueLoadState.DocumentLoaded -> {
-                HorizontalViewPdf(horizontalVueReaderState)
+                HorizontalViewPdf(
+                    horizontalVueReaderState = horizontalVueReaderState,
+                    onClickClose = onClickBack
+                )
             }
 
             is VueLoadState.DocumentLoading -> {
@@ -144,16 +156,34 @@ fun PDFViewer(
 
 @Composable
 private fun HorizontalViewPdf(
-    horizontalVueReaderState: HorizontalVueReaderState
+    horizontalVueReaderState: HorizontalVueReaderState,
+    onClickClose: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         HorizontalVueReader(
             modifier = Modifier.fillMaxSize(),
             contentModifier = Modifier.fillMaxSize(),
-            horizontalVueReaderState = horizontalVueReaderState
+            horizontalVueReaderState = horizontalVueReaderState,
+
         )
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp, bottom = 20.dp, top = 50.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            TopBarPDf(
+                onClickExit = onClickClose,
+                currentPage =  horizontalVueReaderState.currentPage,
+                totalPage = horizontalVueReaderState.pdfPageCount
+            )
+        }
 
         Row(
             modifier = Modifier
@@ -163,20 +193,74 @@ private fun HorizontalViewPdf(
 
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            NavigationButtons(
-                onClickNext = {},
-                onClickBack = {}
+            BottomBarPDF(
+                onClickNext = {
+                    scope.launch { horizontalVueReaderState.nextPage() }
+                },
+                onClickBack = {
+                    scope.launch { horizontalVueReaderState.prevPage() }
+                },
+                onClickRotateLeft = {
+                    horizontalVueReaderState.rotate(-90f)
+                },
+                onClickRotateRight = {
+                    horizontalVueReaderState.rotate(90f)
+                }
             )
         }
     }
 
 }
 
+@Composable
+private fun TopBarPDf(
+    onClickExit: () -> Unit,
+    currentPage: Int,
+    totalPage: Int
+) {
+    Box(
+        modifier = Modifier
+            .background(color = Block.copy(alpha = 0.75f), shape = RoundedCornerShape(7.dp))
+            .border(1.dp, TextColor, shape = RoundedCornerShape(7.dp))
+            .clip(RoundedCornerShape(15.dp))
+            .height(50.dp)
+            .padding(horizontal = 10.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "$currentPage из $totalPage",
+            fontFamily = poppins,
+            fontSize = 16.sp,
+            color = TextColor,
+            fontWeight = FontWeight.Medium,
+        )
+    }
+
+    IconButton(
+        onClick = onClickExit,
+        modifier = Modifier
+            .background(color = Block.copy(alpha = 0.75f), shape = RoundedCornerShape(15.dp))
+            .border(1.dp, TextColor, shape = RoundedCornerShape(15.dp))
+            .clip(RoundedCornerShape(12.dp))
+            .size(52.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = null,
+            tint = TextColor,
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
+
+
 
 @Composable
-private fun NavigationButtons(
+private fun BottomBarPDF(
     onClickNext: () -> Unit,
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    onClickRotateLeft: () -> Unit,
+    onClickRotateRight: () -> Unit
 ) {
     IconButton(
         onClick = onClickBack,
@@ -192,6 +276,42 @@ private fun NavigationButtons(
             tint = TextColor,
             modifier = Modifier.size(32.dp)
         )
+    }
+
+    Row {
+        IconButton(
+            onClick = onClickRotateLeft,
+            modifier = Modifier
+                .background(color = Block.copy(alpha = 0.75f), shape = RoundedCornerShape(15.dp))
+                .border(1.dp, TextColor, shape = RoundedCornerShape(15.dp))
+                .clip(RoundedCornerShape(15.dp))
+                .size(52.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.rotate_left),
+                contentDescription = null,
+                tint = TextColor,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+
+        Spacer(Modifier.width(7.dp))
+
+        IconButton(
+            onClick = onClickRotateRight,
+            modifier = Modifier
+                .background(color = Block.copy(alpha = 0.75f), shape = RoundedCornerShape(15.dp))
+                .border(1.dp, TextColor, shape = RoundedCornerShape(15.dp))
+                .clip(RoundedCornerShape(15.dp))
+                .size(52.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.rotate_right),
+                contentDescription = null,
+                tint = TextColor,
+                modifier = Modifier.size(32.dp)
+            )
+        }
     }
 
     IconButton(
@@ -211,3 +331,4 @@ private fun NavigationButtons(
         )
     }
 }
+
