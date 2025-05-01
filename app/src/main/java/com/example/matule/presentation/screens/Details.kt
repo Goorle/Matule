@@ -1,5 +1,16 @@
 package com.example.matule.presentation.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -93,8 +104,11 @@ fun DetailsScreen(
         }
     ) { innerPadding ->
         val currentItem = viewModel.item
-        if (currentItem != null) {
-
+        AnimatedVisibility(
+            visible = currentItem != null,
+            enter = scaleIn(),
+            exit = scaleOut()
+            ){
             if (viewModel.visiblePDF) {
                 Box(
                     modifier = Modifier.fillMaxSize()
@@ -116,7 +130,7 @@ fun DetailsScreen(
                         if (currentBitmap != null) {
                             item {
                                 Text(
-                                    text = currentItem.publication.title,
+                                    text = currentItem!!.publication.title,
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     lineHeight = 26.sp,
@@ -172,6 +186,7 @@ fun DetailsScreen(
                                     modifier = Modifier.clickable {
                                         viewModel.changeLines()
                                     }
+                                        .animateContentSize()
                                 )
 
                                 Box(

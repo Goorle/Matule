@@ -1,5 +1,8 @@
 package com.example.matule.presentation.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -147,6 +150,11 @@ private fun NewspaperRow(
             items(
                 viewModel.getNewsPaper()
             ) { item ->
+                AnimatedVisibility(
+                    visible = viewModel.isLoading,
+                    enter = scaleIn(),
+                    exit = scaleOut()
+                    ) { }
                 val card = CardData(
                     publicationId = item.publication.id,
                     name = item.publication.title,
