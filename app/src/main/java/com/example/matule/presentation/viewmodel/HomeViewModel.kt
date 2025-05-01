@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel: ViewModel() {
     private val repository = Repositories()
     private var newspaper by mutableStateOf<List<NewspaperResponse>>(listOf())
+    var isLoading by mutableStateOf(false)
 
     init {
         updateNewsPaper()
@@ -19,7 +20,9 @@ class HomeViewModel: ViewModel() {
 
     fun updateNewsPaper() {
         viewModelScope.launch {
+            isLoading = true
             newspaper = repository.getNewsPapersWithDetails()
+            isLoading = false
         }
     }
 
