@@ -10,35 +10,23 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.matule.presentation.screens.DetailsScreen
 import com.example.matule.presentation.screens.Home
-import com.example.matule.presentation.screens.Listing
-import com.example.matule.presentation.screens.OnBoarding
-import com.example.matule.presentation.screens.Popular
 import com.example.matule.presentation.screens.SignIn
 import com.example.matule.presentation.screens.SplashScreen
-import kotlinx.coroutines.delay
 
 
 @Composable
 fun NavigationApp(navHostController: NavHostController) {
     NavHost(
         navController = navHostController,
-        startDestination = Routes.SplashScreen.route
+        startDestination = Routes.Home.route
     ) {
 
         composable(

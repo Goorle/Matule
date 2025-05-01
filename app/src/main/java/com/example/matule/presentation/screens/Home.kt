@@ -156,10 +156,10 @@ private fun NewspaperRow(
                     exit = scaleOut()
                     ) { }
                 val card = CardData(
-                    publicationId = item.publication.id,
-                    name = item.publication.title,
-                    image = item.publication.image,
-                    publicationData = item.publication.publicationDate
+                    publicationId = item.publication?.id ?: "",
+                    name = item.publication?.title ?: "",
+                    image = item.publication?.image ?: "",
+                    publicationData = item.publication?.publicationDate ?: ""
                 )
                 CardProduct(
                     cardData = card,

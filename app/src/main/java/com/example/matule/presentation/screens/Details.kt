@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
+import com.example.matule.domain.models.UserCollection
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
@@ -65,6 +66,7 @@ fun DetailsScreen(
 ) {
     if (itemId != null) {
         viewModel.getItem(itemId)
+        viewModel.getUserCollection(itemId)
         viewModel.getImage()
     }
 
@@ -83,6 +85,9 @@ fun DetailsScreen(
                     onClick = {
                         viewModel.getUrlPDF()
                         viewModel.visiblePDF = true
+                        if (itemId != null) {
+                            viewModel.addPublicationToCollection(itemId)
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Accent,
@@ -113,7 +118,10 @@ fun DetailsScreen(
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    PDFViewer(viewModel.urlPDF, onClickBack)
+                    PDFViewer(viewModel.urlPDF,
+                        onClickBack,
+                        viewModel.userCollection ?: viewModel.getEmptyCollection(itemId ?: "")
+                        )
                 }
             } else {
                 Box(
@@ -127,10 +135,10 @@ fun DetailsScreen(
                             .fillMaxWidth(),
                     ) {
                         val currentBitmap = viewModel.bitmap
-                        if (currentBitmap != null) {
+                        if (currentBitmap != null && currentItem != null) {
                             item {
                                 Text(
-                                    text = currentItem!!.publication.title,
+                                    text = currentItem.title,
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     lineHeight = 26.sp,
@@ -139,7 +147,7 @@ fun DetailsScreen(
                                 )
 
                                 Text(
-                                    text = "Дата публикации: " + currentItem.publication.publicationDate
+                                    text = "Дата публикации: " + currentItem.publicationDate
                                         .split("-")
                                         .reversed()
                                         .joinToString("."),
@@ -177,7 +185,7 @@ fun DetailsScreen(
                                 )
 
                                 Text(
-                                    text = currentItem.publication.description,
+                                    text = currentItem.description,
                                     fontSize = 14.sp,
                                     color = Hint,
                                     lineHeight = 24.sp,
@@ -208,7 +216,10 @@ fun DetailsScreen(
                             }
                         } else {
                             item {
-                                CircularProgressIndicator(color = Accent)
+                                Box(modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center) {
+                                    CircularProgressIndicator(color = Accent)
+                                }
                             }
                         }
                     }

@@ -9,7 +9,9 @@ data class NewspaperResponse(
     val newspaperId: String,
 
     @SerialName("Publication")
-    val publication: PublicationData
+    val publication: PublicationData? = null,
+
+    var userCollection: UserCollection? = null
 )
 
 @Serializable

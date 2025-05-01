@@ -5,6 +5,7 @@ data class CardData(
     val name: String = "",
     val image: String? = null,
     var isFavorite: Boolean = false,
-    var isInCart: Boolean = false,
-    val publicationData: String = ""
+    val publicationData: String = "",
+    val isReading: Boolean = false,
+    val countPageReading: Int = 0
 )

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -11,16 +12,41 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.matule.data.Repositories
 import com.example.matule.domain.models.NewspaperResponse
+import com.example.matule.domain.models.Publication
+import com.example.matule.domain.models.UserCollection
 import kotlinx.coroutines.launch
 
 class DetailsViewModel: ViewModel() {
     val repository = Repositories()
-    var item by mutableStateOf<NewspaperResponse?>(null)
+    var item by mutableStateOf<Publication?>(null)
     var bitmap by mutableStateOf<Bitmap?>(null)
-    var linesDescription by mutableStateOf(3)
+    var linesDescription by mutableIntStateOf(3)
     var visiblePDF by mutableStateOf(false)
     var urlPDF by mutableStateOf("")
     var buttonEnable by mutableStateOf(false)
+    var userCollection by mutableStateOf<UserCollection?>(null)
+
+    fun getUserCollection(publicationId: String) {
+        var userId = repository.getUserId()
+        if (userId.isNotEmpty()) {
+            viewModelScope.launch {
+                userCollection = repository.getUserPublication(publicationId, userId)
+            }
+        }
+    }
+
+    fun getEmptyCollection(itemId: String): UserCollection {
+        var userId = repository.getUserId()
+        if (userId.isNotEmpty()) {
+            return UserCollection(
+                publicationId = itemId,
+                userId = userId,
+                countReading = 1
+            )
+        }
+
+        return UserCollection()
+    }
 
     fun getItem(publicationId: String) {
         viewModelScope.launch {
@@ -34,8 +60,8 @@ class DetailsViewModel: ViewModel() {
     fun getImage() {
         viewModelScope.launch {
             val itemBuff = item
-            if (itemBuff != null && itemBuff.publication.image != null) {
-                val imageUrl = itemBuff.publication.image
+            if (itemBuff != null) {
+                val imageUrl = itemBuff.image
                 val list = imageUrl.split("/")
                 val bucket = list[0]
                 val file = list[1]
@@ -47,8 +73,8 @@ class DetailsViewModel: ViewModel() {
 
     fun getUrlPDF() {
         val itemBuff = item
-        if (itemBuff != null && itemBuff.publication.pointFile.isNotEmpty()) {
-            val filePath = itemBuff.publication.pointFile
+        if (itemBuff != null && itemBuff.pointFile.isNotEmpty()) {
+            val filePath = itemBuff.pointFile
             val list = filePath.split("/")
             val bucket = list[0]
             val file = list[1]
@@ -64,5 +90,18 @@ class DetailsViewModel: ViewModel() {
             linesDescription = 3
         }
     }
+
+    fun addPublicationToCollection(publicationId: String) {
+        viewModelScope.launch {
+
+            val userId = repository.getUserId()
+
+            if (userId != "" && userCollection == null) {
+                repository.addPublicationCollection(publicationId, userId)
+            }
+        }
+    }
+
+
 
 }
