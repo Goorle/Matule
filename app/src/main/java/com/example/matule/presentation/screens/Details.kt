@@ -97,7 +97,7 @@ fun DetailsScreen(
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    MyPdfScreenFromUrl(viewModel.urlPDF, onClickBack)
+                    PDFViewer(viewModel.urlPDF, onClickBack)
                 }
             } else {
                 Box(
