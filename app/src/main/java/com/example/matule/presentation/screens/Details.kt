@@ -75,10 +75,12 @@ fun DetailsScreen(
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Accent,
-                        contentColor = Block
+                        contentColor = Block,
+                        disabledContainerColor = Accent.copy(alpha = 0.7f)
                     ),
                     modifier = Modifier.height(50.dp).fillMaxWidth(0.8f),
-                    shape = RoundedCornerShape(15.dp)
+                    shape = RoundedCornerShape(15.dp),
+                    enabled = viewModel.buttonEnable
                 ) {
                     Text(
                         text = "Читать",
@@ -97,7 +99,7 @@ fun DetailsScreen(
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    MyPdfScreenFromUrl(viewModel.urlPDF, onClickBack)
+                    PDFViewer(viewModel.urlPDF, onClickBack)
                 }
             } else {
                 Box(

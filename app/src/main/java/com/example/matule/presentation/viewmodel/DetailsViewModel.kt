@@ -8,26 +8,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.matule.data.Repositories
 import com.example.matule.domain.models.NewspaperResponse
 import kotlinx.coroutines.launch
 
 class DetailsViewModel: ViewModel() {
     val repository = Repositories()
-
     var item by mutableStateOf<NewspaperResponse?>(null)
-
     var bitmap by mutableStateOf<Bitmap?>(null)
-
     var linesDescription by mutableStateOf(3)
-
     var visiblePDF by mutableStateOf(false)
-
     var urlPDF by mutableStateOf("")
+    var buttonEnable by mutableStateOf(false)
 
     fun getItem(publicationId: String) {
         viewModelScope.launch {
             item = repository.getPublicationById(publicationId)
+            if (item != null) {
+                buttonEnable = true
+            }
         }
     }
 
