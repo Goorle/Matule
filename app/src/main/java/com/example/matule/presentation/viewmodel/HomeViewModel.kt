@@ -7,26 +7,49 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.matule.data.Repositories
 import com.example.matule.domain.models.NewspaperResponse
+import com.example.matule.domain.models.UserCollection
 import kotlinx.coroutines.launch
 
 class HomeViewModel: ViewModel() {
     private val repository = Repositories()
     private var newspaper by mutableStateOf<List<NewspaperResponse>>(listOf())
+    private var userPublication by mutableStateOf<List<UserCollection>>(listOf())
     var isLoading by mutableStateOf(false)
 
     init {
+        isLoading = true
+
         updateNewsPaper()
+
+        isLoading = false
     }
 
     fun updateNewsPaper() {
         viewModelScope.launch {
-            isLoading = true
+            val userId = repository.getUserId()
+            if (userId.isNotEmpty()) {
+                userPublication = repository.getPublicationUser(userId)
+            }
             newspaper = repository.getNewsPapersWithDetails()
-            isLoading = false
+
+            setUserNewspaper()
+        }
+    }
+
+    fun setUserNewspaper() {
+        newspaper.forEach { newspaper ->
+            userPublication.forEach { publication ->
+                if (newspaper.publication != null)
+                if (newspaper.publication.id == publication.publicationId) {
+                    newspaper.userCollection = publication
+                }
+            }
         }
     }
 
     fun getNewsPaper(): List<NewspaperResponse> {
         return newspaper
     }
+
+
 }

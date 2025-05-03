@@ -12,7 +12,9 @@ data class UserCollection(
     @SerialName("user_id")
     val userId: String = "",
     @SerialName("is_reading")
-    val isReading: Boolean = false,
+    var isReading: Boolean = false,
     @SerialName("added_at")
-    val addedAt: String = ""
+    val addedAt: String = "",
+    @SerialName("count_reading")
+    var countReading: Int = 0
 )

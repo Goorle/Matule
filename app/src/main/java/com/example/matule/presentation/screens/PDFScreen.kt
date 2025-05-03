@@ -1,5 +1,6 @@
 package com.example.matule.presentation.screens
 
+import android.content.Context
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -32,8 +33,11 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +50,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.matule.R
+import com.example.matule.data.Repositories
 import com.example.matule.domain.font.poppins
+import com.example.matule.domain.models.UserCollection
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Block
 import com.example.matule.presentation.ui.theme.TextColor
@@ -56,12 +62,14 @@ import com.pratikk.jetpdfvue.state.VueFileType
 import com.pratikk.jetpdfvue.state.VueLoadState
 import com.pratikk.jetpdfvue.state.VueResourceType
 import com.pratikk.jetpdfvue.state.rememberHorizontalVueReaderState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun PDFViewer(
     url: String,
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    collection: UserCollection
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -70,7 +78,9 @@ fun PDFViewer(
             url,
             fileType = VueFileType.PDF
         ),
+        
     )
+
 
 
     BoxWithConstraints(
@@ -136,7 +146,8 @@ fun PDFViewer(
             is VueLoadState.DocumentLoaded -> {
                 HorizontalViewPdf(
                     horizontalVueReaderState = horizontalVueReaderState,
-                    onClickClose = onClickBack
+                    onClickClose = onClickBack,
+                    userCollection = collection
                 )
             }
 
@@ -157,13 +168,15 @@ fun PDFViewer(
 @Composable
 private fun HorizontalViewPdf(
     horizontalVueReaderState: HorizontalVueReaderState,
-    onClickClose: () -> Unit
+    onClickClose: () -> Unit,
+    userCollection: UserCollection
 ) {
     val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+        var countPage by remember { mutableStateOf(userCollection.countReading) }
         HorizontalVueReader(
             modifier = Modifier.fillMaxSize(),
             contentModifier = Modifier.fillMaxSize(),
@@ -195,7 +208,19 @@ private fun HorizontalViewPdf(
         ) {
             BottomBarPDF(
                 onClickNext = {
-                    scope.launch { horizontalVueReaderState.nextPage() }
+                    scope.launch {
+                        horizontalVueReaderState.nextPage()
+                        countPage = horizontalVueReaderState.currentPage
+
+                        if (countPage > userCollection.countReading) {
+                            userCollection.countReading = horizontalVueReaderState.currentPage
+
+                            if (userCollection.countReading == horizontalVueReaderState.pdfPageCount) {
+                                userCollection.isReading = true
+                            }
+                            updateCollection(userCollection, scope)
+                        }
+                    }
                 },
                 onClickBack = {
                     scope.launch { horizontalVueReaderState.prevPage() }
@@ -329,6 +354,15 @@ private fun BottomBarPDF(
             tint = TextColor,
             modifier = Modifier.size(32.dp)
         )
+    }
+}
+
+
+private fun updateCollection(userCollection: UserCollection, scope: CoroutineScope) {
+    val repository = Repositories()
+
+    scope.launch {
+        repository.updateCollection(userCollection)
     }
 }
 
