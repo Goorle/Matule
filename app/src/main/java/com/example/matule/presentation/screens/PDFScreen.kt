@@ -78,7 +78,9 @@ fun PDFViewer(
             url,
             fileType = VueFileType.PDF
         ),
+        
     )
+
 
 
     BoxWithConstraints(

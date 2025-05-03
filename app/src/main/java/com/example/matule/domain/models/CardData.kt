@@ -1,11 +1,12 @@
 package com.example.matule.domain.models
 
 data class CardData(
-    val publicationId: String = "",
-    val name: String = "",
-    val image: String? = null,
+    var publicationId: String = "",
+    var name: String = "",
+    var image: String? = null,
     var isFavorite: Boolean = false,
-    val publicationData: String = "",
-    val isReading: Boolean = false,
-    val countPageReading: Int = 0
+    var publicationData: String = "",
+    var isReading: Boolean = false,
+    var countPageReading: Int = 0,
+    var maxCountPage: Int = 12
 )

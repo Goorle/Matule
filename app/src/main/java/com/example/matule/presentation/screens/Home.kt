@@ -35,7 +35,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +55,7 @@ import com.example.matule.domain.font.poppins
 import com.example.matule.domain.models.CardData
 import com.example.matule.presentation.components.BottomAppBar
 import com.example.matule.presentation.components.CardProduct
+import com.example.matule.presentation.navigation.Routes
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
@@ -63,6 +68,15 @@ fun Home(
     viewModel: HomeViewModel = viewModel(),
     navHostController: NavHostController
 ) {
+
+    LaunchedEffect(Unit) {
+        navHostController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.route == Routes.Home.route) {
+                viewModel.updateNewsPaper()
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopBar()
@@ -145,22 +159,26 @@ private fun NewspaperRow(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+
         ) {
             items(
                 viewModel.getNewsPaper()
             ) { item ->
-                AnimatedVisibility(
-                    visible = viewModel.isLoading,
-                    enter = scaleIn(),
-                    exit = scaleOut()
-                    ) { }
                 val card = CardData(
                     publicationId = item.publication?.id ?: "",
                     name = item.publication?.title ?: "",
                     image = item.publication?.image ?: "",
                     publicationData = item.publication?.publicationDate ?: ""
                 )
+
+                val currentCollection = item.userCollection
+
+                if (currentCollection != null) {
+                    card.isReading = currentCollection.isReading
+                    card.countPageReading = currentCollection.countReading
+                }
+
                 CardProduct(
                     cardData = card,
                     navHostController

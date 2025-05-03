@@ -1,8 +1,10 @@
 package com.example.matule.presentation.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -39,6 +45,7 @@ import com.example.matule.presentation.navigation.Routes
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Hint
 import com.example.matule.presentation.ui.theme.Red
+import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.CardViewModel
 
 @Composable
@@ -72,17 +79,71 @@ fun CardProduct(
             ) {
                 Box(
                     contentAlignment = Alignment.TopStart,
-                    modifier = Modifier.height(200.dp),
+                    modifier = Modifier.height(200.dp).clip(RoundedCornerShape(7.dp)),
+
                 ) {
                     val currentBitmap = viewModel.bitmap
                     if (currentBitmap != null) {
                         Image(
                             bitmap = currentBitmap.asImageBitmap(),
                             contentDescription = "Product",
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().background(Red),
                             contentScale = ContentScale.FillWidth
 
                         )
+                        if (cardData.isReading) {
+                            Box(
+                                modifier = Modifier.fillMaxSize().background(TextColor.copy(alpha = 0.3f))
+                            ) {
+                                Row(
+                                    modifier = Modifier.align(Alignment.BottomStart).padding(5.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Done,
+                                        contentDescription = null,
+                                        tint = Block,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+
+                                    Spacer(Modifier.width(2.dp))
+
+                                    Text(
+                                        text = "Прочитано",
+                                        fontFamily = poppins,
+                                        color = Block,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
+                        }
+
+                        if (cardData.countPageReading > 0 && !cardData.isReading) {
+
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .padding(top = 4.dp, end = 5.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            TextColor.copy(alpha = 0.4f),
+                                            shape = RoundedCornerShape(7.dp)
+                                        )
+                                        .padding(vertical = 5.dp, horizontal = 10.dp)
+                                ) {
+
+                                    Text(
+                                        text = "${cardData.countPageReading} / ${cardData.maxCountPage}",
+                                        fontFamily = poppins,
+                                        color = Block,
+                                        fontSize = 16.sp,
+                                    )
+                                }
+                            }
+                        }
                     } else {
                         Box(
                             modifier = Modifier.fillMaxSize(),

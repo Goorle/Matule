@@ -1,13 +1,8 @@
 package com.example.matule.presentation.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -68,7 +63,6 @@ fun NavigationApp(navHostController: NavHostController) {
         ) {
             SplashScreen {
                     navHostController.navigate(Routes.SignIn.route) {
-                        // Без resetting всего стека
                         popUpTo(Routes.SplashScreen.route)
                 }
             }
@@ -78,19 +72,19 @@ fun NavigationApp(navHostController: NavHostController) {
             route = Routes.Home.route,
             enterTransition = {
                 slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioLowBouncy,
-                        stiffness = Spring.StiffnessVeryLow
-                        )
+                    initialOffsetX = { -it },
+                    animationSpec = tween(
+                        delayMillis = 100,
+                        easing = LinearOutSlowInEasing
+                    )
                 )
             },
             exitTransition = {
                 slideOutHorizontally(
                     targetOffsetX = { -it },
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioLowBouncy,
-                        stiffness = Spring.StiffnessVeryLow
+                    animationSpec = tween(
+                        delayMillis = 100,
+                        easing = FastOutLinearInEasing
                     )
                 )
             }
@@ -105,9 +99,9 @@ fun NavigationApp(navHostController: NavHostController) {
             exitTransition = {
                 slideOutHorizontally(
                     targetOffsetX = { -it },
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioLowBouncy,
-                        stiffness = Spring.StiffnessVeryLow
+                    animationSpec = tween(
+                        durationMillis = 100,
+                        easing = FastOutLinearInEasing
                     )
                 )
             }

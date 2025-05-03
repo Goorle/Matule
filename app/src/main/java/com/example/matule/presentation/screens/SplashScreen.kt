@@ -71,7 +71,6 @@ fun SplashScreen(
             enter = fadeIn(animationSpec = tween(durationMillis = 800)),
             exit = fadeOut(animationSpec = tween(durationMillis = 800))
         ) {
-            
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = null

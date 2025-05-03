@@ -17,25 +17,22 @@ class HomeViewModel: ViewModel() {
     var isLoading by mutableStateOf(false)
 
     init {
+        isLoading = true
+
         updateNewsPaper()
-        updateUserPublication()
+
+        isLoading = false
     }
 
     fun updateNewsPaper() {
-        viewModelScope.launch {
-            isLoading = true
-            newspaper = repository.getNewsPapersWithDetails()
-            setUserNewspaper()
-            isLoading = false
-        }
-    }
-
-    fun updateUserPublication() {
         viewModelScope.launch {
             val userId = repository.getUserId()
             if (userId.isNotEmpty()) {
                 userPublication = repository.getPublicationUser(userId)
             }
+            newspaper = repository.getNewsPapersWithDetails()
+
+            setUserNewspaper()
         }
     }
 
