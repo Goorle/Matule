@@ -1,5 +1,6 @@
 package com.example.matule.data
 
+import com.example.matule.domain.models.FavoritePublication
 import com.example.matule.domain.models.NewspaperResponse
 import com.example.matule.domain.models.Publication
 import com.example.matule.domain.models.User
@@ -113,5 +114,50 @@ class Repositories {
             }
         }.decodeSingleOrNull<UserCollection>()
 
+    }
+
+    suspend fun getFavoritePublication(): List<FavoritePublication> {
+        val userId = getUserId()
+
+        return client.from("FavoritePublication").select(
+            Columns.raw("user_id, publication_id")
+        ) {
+            filter {
+                FavoritePublication::userId eq userId
+            }
+        }.decodeList<FavoritePublication>()
+    }
+
+    suspend fun findFavorite(publicationId: String): FavoritePublication? {
+        val userId = getUserId()
+
+        return client.from("FavoritePublication").select{
+            filter {
+                FavoritePublication::publicationId eq publicationId
+                FavoritePublication::userId eq userId
+            }
+        }.decodeSingleOrNull<FavoritePublication>()
+    }
+
+    suspend fun updateFavorite(publicationId: String) {
+        val userId = getUserId()
+
+        client.from("FavoritePublication").insert(
+            FavoritePublication(
+                userId = userId,
+                publicationId = publicationId
+            )
+        )
+    }
+
+    suspend fun deleteFromFavorite(publicationId: String) {
+        val userId = getUserId()
+
+        client.from("FavoritePublication").delete{
+            filter {
+                FavoritePublication::userId eq userId
+                FavoritePublication::publicationId eq publicationId
+            }
+        }
     }
 }

@@ -11,7 +11,9 @@ data class NewspaperResponse(
     @SerialName("Publication")
     val publication: PublicationData? = null,
 
-    var userCollection: UserCollection? = null
+    var userCollection: UserCollection? = null,
+
+    var isFavorite: FavoritePublication? = null
 )
 
 @Serializable
