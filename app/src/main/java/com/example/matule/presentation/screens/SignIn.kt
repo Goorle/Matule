@@ -46,12 +46,12 @@ import com.example.matule.presentation.ui.theme.SubTextDark
 import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.SignInViewModel
 import kotlinx.coroutines.launch
-import javax.xml.parsers.DocumentBuilder
 
 @Composable
 fun SignIn(
     viewModel: SignInViewModel = viewModel(),
-    onClickSignIn: () -> Unit
+    onClickSignIn: () -> Unit,
+    onClickRegister: () -> Unit
 ) {
     val textFieldColors = TextFieldDefaults.colors(
         unfocusedTextColor = TextColor,
@@ -230,7 +230,7 @@ fun SignIn(
         }
 
         TextButton(
-            onClick = {},
+            onClick = onClickRegister,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Block,
                 contentColor = SubTextDark
@@ -307,5 +307,8 @@ fun DialogError(
 @Preview(showBackground = true)
 @Composable
 private fun SignInPreview() {
-    SignIn() {}
+    SignIn(
+        onClickSignIn = {},
+        onClickRegister = {}
+    )
 }
