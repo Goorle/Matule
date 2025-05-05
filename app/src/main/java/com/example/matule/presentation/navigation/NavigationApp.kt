@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.matule.presentation.screens.DetailsScreen
 import com.example.matule.presentation.screens.Home
+import com.example.matule.presentation.screens.RegisterScreen
 import com.example.matule.presentation.screens.SignIn
 import com.example.matule.presentation.screens.SplashScreen
 
@@ -21,7 +22,7 @@ import com.example.matule.presentation.screens.SplashScreen
 fun NavigationApp(navHostController: NavHostController) {
     NavHost(
         navController = navHostController,
-        startDestination = Routes.Home.route
+        startDestination = Routes.SplashScreen.route
     ) {
 
         composable(
@@ -41,6 +42,40 @@ fun NavigationApp(navHostController: NavHostController) {
         ) {
             SignIn(
                 onClickSignIn = {
+                    navHostController.navigate(Routes.Home.route)
+                },
+                onClickRegister = {
+                    navHostController.navigate(Routes.RegisterScreen.route)
+                }
+            )
+        }
+
+        composable(
+            route = Routes.RegisterScreen.route,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(
+                        delayMillis = 100,
+                        easing = LinearOutSlowInEasing
+                    )
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(
+                        delayMillis = 100,
+                        easing = FastOutLinearInEasing
+                    )
+                )
+            }
+        ) {
+            RegisterScreen(
+                onClickBack = {
+                    navHostController.popBackStack()
+                },
+                onSuccessfullyReg = {
                     navHostController.navigate(Routes.Home.route)
                 }
             )

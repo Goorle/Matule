@@ -1,11 +1,8 @@
 package com.example.matule.data
 
-
-
-import android.util.Log
-import com.example.matule.domain.models.Newspaper
 import com.example.matule.domain.models.NewspaperResponse
 import com.example.matule.domain.models.Publication
+import com.example.matule.domain.models.User
 import com.example.matule.domain.models.UserCollection
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
@@ -13,14 +10,13 @@ import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.storage.storage
-import io.github.jan.supabase.storage.upload
 import kotlinx.serialization.json.Json
 
 class Repositories {
     private val client = Database.supabase
 
     fun getUserId(): String {
-        var userId = "dc016d2a-01dc-41f8-8412-9e500beec87b"
+        var userId = ""
         val data = client.auth.currentUserOrNull()
 
         if (data != null) {
@@ -28,6 +24,21 @@ class Repositories {
         }
 
         return userId
+    }
+
+    suspend fun signUpUser(email: String, password: String, name: String) {
+        client.auth.signUpWith(Email) {
+            this.email = email
+            this.password = password
+        }
+
+        val userId = getUserId()
+
+        client.from("User").insert(User(
+            userId = userId,
+            email = email,
+            firstname = name
+        ))
     }
 
     suspend fun signInUser(email: String, password: String) {
