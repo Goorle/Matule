@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -237,8 +238,18 @@ fun SignIn(
             )
         ) {
             Text(
-                text = stringResource(R.string.new_create_user),
+                text = "Вы впервые?",
                 color = Hint,
+                fontFamily = poppins,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp
+            )
+
+            Spacer(Modifier.width(5.dp))
+
+            Text(
+                text = "Создать пользователя",
+                color = TextColor,
                 fontFamily = poppins,
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp
