@@ -1,6 +1,7 @@
 package com.example.matule.data
 
 import com.example.matule.domain.models.FavoritePublication
+import com.example.matule.domain.models.FavoriteResponse
 import com.example.matule.domain.models.NewspaperResponse
 import com.example.matule.domain.models.Publication
 import com.example.matule.domain.models.User
@@ -116,16 +117,16 @@ class Repositories {
 
     }
 
-    suspend fun getFavoritePublication(): List<FavoritePublication> {
+    suspend fun getFavoritePublication(): List<FavoriteResponse> {
         val userId = getUserId()
 
         return client.from("FavoritePublication").select(
-            Columns.raw("user_id, publication_id")
+            Columns.raw("favorite_id, Publication(id, title, publication_date, image, description)")
         ) {
             filter {
                 FavoritePublication::userId eq userId
             }
-        }.decodeList<FavoritePublication>()
+        }.decodeList<FavoriteResponse>()
     }
 
     suspend fun findFavorite(publicationId: String): FavoritePublication? {

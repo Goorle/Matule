@@ -1,8 +1,5 @@
 package com.example.matule.presentation.screens
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,10 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,11 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,9 +30,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.CompositingStrategy
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -83,22 +73,6 @@ fun Home(
         },
         bottomBar = {
             BottomAppBar(navHostController)
-        },
-        floatingActionButton = {
-            IconButton(
-                onClick = {},
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Accent
-                ),
-                modifier = Modifier.size(56.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.bag),
-                    contentDescription = null,
-                    tint = Block,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
         },
     ) { innerPadding ->
         LazyColumn (

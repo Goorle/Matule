@@ -74,5 +74,8 @@ dependencies {
 //    implementation("io.github.afreakyelf:Pdf-Viewer:2.3.4")
     implementation("com.github.pratikksahu:JetPDFVue:1.0.7")
 
+    testImplementation("junit:junit:4.13.2")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:5.1.0")
+
 
 }

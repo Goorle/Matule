@@ -50,6 +50,4 @@ class HomeViewModel: ViewModel() {
     fun getNewsPaper(): List<NewspaperResponse> {
         return newspaper
     }
-
-
 }
