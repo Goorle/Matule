@@ -32,7 +32,6 @@ class UserViewModel: ViewModel() {
     var phone by mutableStateOf("")
     var subscription by mutableStateOf(false)
 
-    var selectedImageUri by mutableStateOf<Uri?>(null)
 
     init {
         updateUser()
@@ -76,11 +75,4 @@ class UserViewModel: ViewModel() {
         }
     }
 
-    fun uploadFile(bytes: ByteArray?) {
-        if (bytes != null) {
-            viewModelScope.launch {
-                repository.uploadFile(bytes)
-            }
-        }
-    }
 }

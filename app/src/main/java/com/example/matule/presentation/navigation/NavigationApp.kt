@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.matule.presentation.screens.DetailsScreen
+import com.example.matule.presentation.screens.EditProfileScreen
 import com.example.matule.presentation.screens.FavoriteScreen
 import com.example.matule.presentation.screens.Home
 import com.example.matule.presentation.screens.RegisterScreen
@@ -24,7 +25,7 @@ import com.example.matule.presentation.screens.UserScreen
 fun NavigationApp(navHostController: NavHostController) {
     NavHost(
         navController = navHostController,
-        startDestination = Routes.Profile.route
+        startDestination = Routes.EditProfileScreen.route
     ) {
 
         composable(
@@ -94,6 +95,12 @@ fun NavigationApp(navHostController: NavHostController) {
             UserScreen(
                 onClickBack = {navHostController.popBackStack()},
                 navHostController = navHostController
+            )
+        }
+
+        composable(route = Routes.EditProfileScreen.route) {
+            EditProfileScreen(
+                onClickBack = {navHostController.popBackStack()}
             )
         }
     }

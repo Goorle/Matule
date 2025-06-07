@@ -161,6 +161,16 @@ class Repositories {
         }.decodeSingleOrNull()
     }
 
+    suspend fun updateUserData(user: User) {
+        val userId = getUserId()
+
+        client.from("User").update(user){
+            filter {
+                User::userId eq userId
+            }
+        }
+    }
+
     suspend fun deleteFromFavorite(publicationId: String) {
         val userId = getUserId()
 

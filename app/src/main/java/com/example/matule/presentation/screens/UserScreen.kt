@@ -65,16 +65,6 @@ fun UserScreen(
     viewModel: UserViewModel = viewModel(),
     navHostController: NavHostController
 ) {
-    val context = LocalContext.current
-
-
-    val photoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri ->
-            viewModel.selectedImageUri = uri
-        }
-    )
-
     LaunchedEffect(viewModel.userData) {
         val currentData = viewModel.userData
         if (currentData != null) {
@@ -144,15 +134,6 @@ fun UserScreen(
                         )
                         TextButton(
                             onClick = {
-                                photoPickerLauncher.launch(
-                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                                )
-
-                                val currentUri = viewModel.selectedImageUri
-                                if (currentUri != null) {
-                                    val bytes = context.contentResolver.openInputStream(currentUri)?.use { it.readBytes() }
-                                    viewModel.uploadFile(bytes)
-                                }
                             },
                             contentPadding = PaddingValues(5.dp),
                         ) {
