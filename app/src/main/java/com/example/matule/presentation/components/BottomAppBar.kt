@@ -85,7 +85,9 @@ fun BottomAppBar(
 
         NavigationBarItem(
             selected = currentRoute == Routes.Profile.route,
-            onClick = {},
+            onClick = {
+                navHostController.navigate(Routes.Profile.route)
+            },
             icon = {
                 Icon(
                     painter = painterResource(R.drawable.profile),

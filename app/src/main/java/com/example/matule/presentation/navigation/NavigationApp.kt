@@ -17,13 +17,14 @@ import com.example.matule.presentation.screens.Home
 import com.example.matule.presentation.screens.RegisterScreen
 import com.example.matule.presentation.screens.SignIn
 import com.example.matule.presentation.screens.SplashScreen
+import com.example.matule.presentation.screens.UserScreen
 
 
 @Composable
 fun NavigationApp(navHostController: NavHostController) {
     NavHost(
         navController = navHostController,
-        startDestination = Routes.SplashScreen.route
+        startDestination = Routes.Profile.route
     ) {
 
         composable(
@@ -86,6 +87,13 @@ fun NavigationApp(navHostController: NavHostController) {
                 onClickBack = {
                     navHostController.popBackStack()
                 }
+            )
+        }
+
+        composable(route = Routes.Profile.route) {
+            UserScreen(
+                onClickBack = {navHostController.popBackStack()},
+                navHostController = navHostController
             )
         }
     }

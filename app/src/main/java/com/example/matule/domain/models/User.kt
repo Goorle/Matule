@@ -11,9 +11,12 @@ data class User(
     val email: String = "",
     val phone: String = "",
     val firstname: String = "",
-    val lastname: String = "",
+    val lastname: String? = "",
     @SerialName("second_name")
     val secondName: String = "",
     @SerialName("reg_date")
-    val regDate: String = ""
+    val regDate: String = "",
+    val subscription: Boolean = false,
+    @SerialName("user_image")
+    val userImage: String? = null
 )
