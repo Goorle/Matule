@@ -11,17 +11,19 @@ data class NewspaperResponse(
     @SerialName("Publication")
     val publication: PublicationData? = null,
 
-    var userCollection: UserCollection? = null
+    var userCollection: UserCollection? = null,
+
+    var isFavorite: FavoritePublication? = null
 )
 
 @Serializable
 data class PublicationData(
-    val id: String,
-    val title: String,
+    val id: String = "",
+    val title: String = "",
     @SerialName("publication_date")
-    val publicationDate: String,
-    val image: String?,
-    val description: String,
+    val publicationDate: String = "",
+    val image: String? = "",
+    val description: String = "",
     @SerialName("point_file")
     val pointFile: String = ""
 )

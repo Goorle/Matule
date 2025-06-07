@@ -41,7 +41,9 @@ fun BottomAppBar(
     ) {
         NavigationBarItem(
             selected = currentRoute == Routes.Home.route,
-            onClick = {},
+            onClick = {
+                navHostController.navigate(Routes.Home.route)
+            },
             icon = {
                 Icon(
                     painter = painterResource(R.drawable.home),
@@ -54,7 +56,9 @@ fun BottomAppBar(
 
         NavigationBarItem(
             selected = currentRoute == Routes.Favorite.route,
-            onClick = {},
+            onClick = {
+                navHostController.navigate(Routes.Favorite.route)
+            },
             icon = {
                 Icon(
                     painter = painterResource(R.drawable.favorite_outlined),
@@ -67,7 +71,8 @@ fun BottomAppBar(
 
         NavigationBarItem(
             selected = currentRoute == Routes.Notification.route,
-            onClick = {},
+            onClick = {
+            },
             icon =  {
                 Icon(
                     painter = painterResource(R.drawable.notification),
@@ -80,7 +85,9 @@ fun BottomAppBar(
 
         NavigationBarItem(
             selected = currentRoute == Routes.Profile.route,
-            onClick = {},
+            onClick = {
+                navHostController.navigate(Routes.Profile.route)
+            },
             icon = {
                 Icon(
                     painter = painterResource(R.drawable.profile),

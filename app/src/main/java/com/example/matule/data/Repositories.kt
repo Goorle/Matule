@@ -1,5 +1,7 @@
 package com.example.matule.data
 
+import com.example.matule.domain.models.FavoritePublication
+import com.example.matule.domain.models.FavoriteResponse
 import com.example.matule.domain.models.NewspaperResponse
 import com.example.matule.domain.models.Publication
 import com.example.matule.domain.models.User
@@ -16,7 +18,7 @@ class Repositories {
     private val client = Database.supabase
 
     fun getUserId(): String {
-        var userId = ""
+        var userId = "cbb588f6-4c90-4b65-8370-f205e0da5b36"
         val data = client.auth.currentUserOrNull()
 
         if (data != null) {
@@ -113,5 +115,71 @@ class Repositories {
             }
         }.decodeSingleOrNull<UserCollection>()
 
+    }
+
+    suspend fun getFavoritePublication(): List<FavoriteResponse> {
+        val userId = getUserId()
+
+        return client.from("FavoritePublication").select(
+            Columns.raw("favorite_id, Publication(id, title, publication_date, image, description)")
+        ) {
+            filter {
+                FavoritePublication::userId eq userId
+            }
+        }.decodeList<FavoriteResponse>()
+    }
+
+    suspend fun findFavorite(publicationId: String): FavoritePublication? {
+        val userId = getUserId()
+
+        return client.from("FavoritePublication").select{
+            filter {
+                FavoritePublication::publicationId eq publicationId
+                FavoritePublication::userId eq userId
+            }
+        }.decodeSingleOrNull<FavoritePublication>()
+    }
+
+    suspend fun updateFavorite(publicationId: String) {
+        val userId = getUserId()
+
+        client.from("FavoritePublication").insert(
+            FavoritePublication(
+                userId = userId,
+                publicationId = publicationId
+            )
+        )
+    }
+
+    suspend fun getUserData(): User? {
+        val userId = getUserId()
+
+        return client.from("User").select{
+            filter {
+                User::userId eq userId
+            }
+        }.decodeSingleOrNull()
+    }
+
+    suspend fun deleteFromFavorite(publicationId: String) {
+        val userId = getUserId()
+
+        client.from("FavoritePublication").delete{
+            filter {
+                FavoritePublication::userId eq userId
+                FavoritePublication::publicationId eq publicationId
+            }
+        }
+    }
+
+    suspend fun uploadFile(bytes: ByteArray) {
+        val userId = getUserId()
+        val bucket = client.storage.from("user-image")
+        bucket.upload(
+            "${userId}_photo.jpg",
+            bytes
+        ) {
+            upsert = true
+        }
     }
 }

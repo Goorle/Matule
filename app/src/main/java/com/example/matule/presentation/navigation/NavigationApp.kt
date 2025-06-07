@@ -12,33 +12,23 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.matule.presentation.screens.DetailsScreen
+import com.example.matule.presentation.screens.FavoriteScreen
 import com.example.matule.presentation.screens.Home
 import com.example.matule.presentation.screens.RegisterScreen
 import com.example.matule.presentation.screens.SignIn
 import com.example.matule.presentation.screens.SplashScreen
+import com.example.matule.presentation.screens.UserScreen
 
 
 @Composable
 fun NavigationApp(navHostController: NavHostController) {
     NavHost(
         navController = navHostController,
-        startDestination = Routes.SplashScreen.route
+        startDestination = Routes.Profile.route
     ) {
 
         composable(
             route = Routes.SignIn.route,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { -it },
-                    animationSpec = tween(300)
-                ) + fadeIn()
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(300)
-                ) + fadeOut()
-            }
         ) {
             SignIn(
                 onClickSignIn = {
@@ -51,25 +41,7 @@ fun NavigationApp(navHostController: NavHostController) {
         }
 
         composable(
-            route = Routes.RegisterScreen.route,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it },
-                    animationSpec = tween(
-                        delayMillis = 100,
-                        easing = LinearOutSlowInEasing
-                    )
-                )
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { -it },
-                    animationSpec = tween(
-                        delayMillis = 100,
-                        easing = FastOutLinearInEasing
-                    )
-                )
-            }
+            route = Routes.RegisterScreen.route
         ) {
             RegisterScreen(
                 onClickBack = {
@@ -82,19 +54,7 @@ fun NavigationApp(navHostController: NavHostController) {
         }
 
         composable(
-            route = Routes.SplashScreen.route,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { -it },
-                    animationSpec = tween(300)
-                ) + fadeIn()
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tween(300)
-                ) + fadeOut()
-            }
+            route = Routes.SplashScreen.route
         ) {
             SplashScreen {
                     navHostController.navigate(Routes.SignIn.route) {
@@ -105,24 +65,6 @@ fun NavigationApp(navHostController: NavHostController) {
 
         composable(
             route = Routes.Home.route,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { -it },
-                    animationSpec = tween(
-                        delayMillis = 100,
-                        easing = LinearOutSlowInEasing
-                    )
-                )
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { -it },
-                    animationSpec = tween(
-                        delayMillis = 100,
-                        easing = FastOutLinearInEasing
-                    )
-                )
-            }
         ) {
             Home(navHostController = navHostController)
         }
@@ -131,20 +73,27 @@ fun NavigationApp(navHostController: NavHostController) {
 
         composable(
             route = Routes.Detail.route + "/{id}",
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { -it },
-                    animationSpec = tween(
-                        durationMillis = 100,
-                        easing = FastOutLinearInEasing
-                    )
-                )
-            }
         ) { stackBackEntry ->
             val productId = stackBackEntry.arguments?.getString("id")
             DetailsScreen(
                 itemId = productId,
                 onClickBack = { navHostController.popBackStack() }
+            )
+        }
+
+        composable(route = Routes.Favorite.route) {
+            FavoriteScreen(
+                navHostController = navHostController,
+                onClickBack = {
+                    navHostController.popBackStack()
+                }
+            )
+        }
+
+        composable(route = Routes.Profile.route) {
+            UserScreen(
+                onClickBack = {navHostController.popBackStack()},
+                navHostController = navHostController
             )
         }
     }

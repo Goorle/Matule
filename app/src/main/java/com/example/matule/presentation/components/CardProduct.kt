@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -57,6 +56,8 @@ fun CardProduct(
     LaunchedEffect(Unit) {
         viewModel.getImage(cardData.image)
     }
+
+    viewModel.checkFavorite(cardData.publicationId)
 
     Card(
 
@@ -93,7 +94,9 @@ fun CardProduct(
                         )
                         if (cardData.isReading) {
                             Box(
-                                modifier = Modifier.fillMaxSize().background(TextColor.copy(alpha = 0.3f))
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(TextColor.copy(alpha = 0.3f))
                             ) {
                                 Row(
                                     modifier = Modifier.align(Alignment.BottomStart).padding(5.dp),
@@ -120,7 +123,6 @@ fun CardProduct(
                         }
 
                         if (cardData.countPageReading > 0 && !cardData.isReading) {
-
                             Column(
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
@@ -154,7 +156,10 @@ fun CardProduct(
                     }
                     IconButton(
                         onClick = {
-                            viewModel.isFavorite = !viewModel.isFavorite
+                            viewModel.updateFavorite(
+                                viewModel.isFavorite,
+                                cardData.publicationId
+                            )
                         },
                         modifier = Modifier.size(32.dp).padding(start = 5.dp, top = 7.dp),
 

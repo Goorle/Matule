@@ -10,7 +10,20 @@ data class FavoritePublication(
     @SerialName("user_id")
     val userId: String = "",
     @SerialName("publication_id")
-    val publicationId: String = "",
+    val publicationId: String,
     @SerialName("created_at")
     val createdAt: String = ""
 )
+
+@Serializable
+data class FavoriteResponse(
+    @SerialName("favorite_id")
+    val favoriteId: String,
+
+    @SerialName("Publication")
+    val publicationId: PublicationData,
+
+    var userCollection: UserCollection? = null
+)
+
+
