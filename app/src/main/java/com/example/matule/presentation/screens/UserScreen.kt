@@ -27,6 +27,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,6 +43,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,6 +55,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
 import com.example.matule.presentation.components.BottomAppBar
+import com.example.matule.presentation.components.PhoneVisualTransformation
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
@@ -62,6 +66,7 @@ import com.example.matule.presentation.viewmodel.UserViewModel
 @Composable
 fun UserScreen(
     onClickBack: () -> Unit,
+    onClickEditProfile: () -> Unit,
     viewModel: UserViewModel = viewModel(),
     navHostController: NavHostController
 ) {
@@ -75,7 +80,8 @@ fun UserScreen(
     Scaffold(
         topBar = {
             TopBarUser(
-                onClickBack = onClickBack
+                onClickBack = onClickBack,
+                onClickEditProfile = onClickEditProfile
             )
         },
         bottomBar = {
@@ -282,19 +288,38 @@ fun UserScreen(
                         Text(
                             text = "Номер телефона",
                             fontFamily = poppins,
+                            color = TextColor,
+                            fontSize = 16.sp
                         )
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(Background, RoundedCornerShape(14.dp))
-                                .padding(vertical = 12.dp, horizontal = 12.dp),
+                                .padding(end = 12.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = viewModel.phone,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal
+
+                            OutlinedTextField(
+                                value = viewModel.phone,
+                                onValueChange = {},
+                                visualTransformation = PhoneVisualTransformation(),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    unfocusedBorderColor = Background,
+                                    unfocusedContainerColor = Background,
+                                    focusedBorderColor = Block,
+                                    focusedContainerColor = Background,
+                                    focusedTextColor = TextColor,
+                                    unfocusedTextColor = TextColor,
+                                    disabledTextColor = TextColor,
+                                    disabledBorderColor = Background
+                                ),
+                                shape = RoundedCornerShape(12.dp),
+                                textStyle = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontFamily = poppins,
+                                ),
+                                enabled = false,
                             )
 
                             val color = if (viewModel.phone.isEmpty()) Red else Accent
@@ -315,6 +340,8 @@ fun UserScreen(
                         Text(
                             text = "Статус подписки",
                             fontFamily = poppins,
+                            fontSize = 16.sp,
+                            color = TextColor
                         )
                         Row(
                             modifier = Modifier
@@ -327,7 +354,8 @@ fun UserScreen(
                             Text(
                                 text = if (viewModel.subscription) "Активен" else "Не активен",
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal
+                                fontWeight = FontWeight.Normal,
+                                color = TextColor
                             )
 
                             val color = if (!viewModel.subscription) Red else Accent
@@ -350,7 +378,8 @@ fun UserScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TopBarUser(
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    onClickEditProfile: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -380,7 +409,7 @@ private fun TopBarUser(
         },
         actions = {
             IconButton(
-                onClick = {},
+                onClick = onClickEditProfile,
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = Background
                 ),
@@ -408,6 +437,7 @@ private fun TopBarUser(
 fun UserPreview() {
     UserScreen(
         onClickBack = {},
+        onClickEditProfile = {},
         navHostController = rememberNavController()
     )
 }

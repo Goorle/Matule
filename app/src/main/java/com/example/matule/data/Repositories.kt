@@ -18,7 +18,7 @@ class Repositories {
     private val client = Database.supabase
 
     fun getUserId(): String {
-        var userId = "cbb588f6-4c90-4b65-8370-f205e0da5b36"
+        var userId = "dc016d2a-01dc-41f8-8412-9e500beec87b"
         val data = client.auth.currentUserOrNull()
 
         if (data != null) {
@@ -164,7 +164,17 @@ class Repositories {
     suspend fun updateUserData(user: User) {
         val userId = getUserId()
 
-        client.from("User").update(user){
+        client.from("User").update({
+            User::firstname setTo user.firstname
+            User::lastname setTo user.lastname
+            User::phone setTo user.phone
+            User::userImage setTo user.userImage
+            User::subscription setTo user.subscription
+            User::email setTo user.email
+            set("secondname", user.secondName)
+        }
+
+        ){
             filter {
                 User::userId eq userId
             }

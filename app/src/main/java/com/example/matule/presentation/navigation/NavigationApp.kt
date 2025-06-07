@@ -25,7 +25,7 @@ import com.example.matule.presentation.screens.UserScreen
 fun NavigationApp(navHostController: NavHostController) {
     NavHost(
         navController = navHostController,
-        startDestination = Routes.EditProfileScreen.route
+        startDestination = Routes.SplashScreen.route
     ) {
 
         composable(
@@ -94,13 +94,14 @@ fun NavigationApp(navHostController: NavHostController) {
         composable(route = Routes.Profile.route) {
             UserScreen(
                 onClickBack = {navHostController.popBackStack()},
+                onClickEditProfile = {navHostController.navigate(Routes.EditProfileScreen.route)},
                 navHostController = navHostController
             )
         }
 
         composable(route = Routes.EditProfileScreen.route) {
             EditProfileScreen(
-                onClickBack = {navHostController.popBackStack()}
+                onClickBack = {navHostController.navigate(Routes.Profile.route) {launchSingleTop = true} }
             )
         }
     }

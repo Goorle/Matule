@@ -1,6 +1,6 @@
 package com.example.matule.presentation.screens
 
-import android.util.Patterns
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,10 +38,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -55,6 +57,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
+import com.example.matule.presentation.components.PhoneVisualTransformation
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
@@ -63,8 +66,6 @@ import com.example.matule.presentation.ui.theme.SubTextDark
 import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.EditProfileViewModel
 import kotlinx.coroutines.launch
-import org.intellij.lang.annotations.Pattern
-import kotlin.math.sin
 
 @Composable
 fun EditProfileScreen(
@@ -72,14 +73,23 @@ fun EditProfileScreen(
     onClickBack: () -> Unit
 
 ) {
+    val mask = "+7 (000) 000-00-00"
+
     val snackBarHost = remember { SnackbarHostState() }
 
     val textStyle = TextStyle(
         fontFamily = poppins,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
         color = TextColor,
         fontWeight = FontWeight.Medium
     )
+
+    LaunchedEffect(viewModel.user) {
+        val currentUser = viewModel.user
+        if (currentUser != null) {
+            viewModel.getImage(currentUser.userImage)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -90,8 +100,9 @@ fun EditProfileScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHost) { data ->
                 Snackbar(
-                    containerColor = Block,
+                    containerColor = Background,
                     contentColor = TextColor,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
                     content = {
                         Row(
                             modifier = Modifier.fillMaxSize(),
@@ -131,15 +142,30 @@ fun EditProfileScreen(
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 item{
-                    Image(
-                        painter = painterResource(R.drawable.default_profile),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(128.dp)
-                            .clip(CircleShape)
-                            .background(Background)
-                    )
+                    val currentBitmap = viewModel.bitmap
+                    Log.d("BITMAP", "$currentBitmap")
+                    if (currentBitmap != null) {
+                        Log.d("BITMAP", "$currentBitmap")
+                        Image(
+                            bitmap = currentBitmap.asImageBitmap(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(128.dp)
+                                .clip(CircleShape)
+                                .background(Background)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.default_profile),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(128.dp)
+                                .clip(CircleShape)
+                                .background(Background)
+                        )
+                    }
                 }
 
                 item {
@@ -259,7 +285,7 @@ fun EditProfileScreen(
                         OutlinedTextField(
                             value = viewModel.phone,
                             onValueChange = {
-                                viewModel.phone = it
+                                viewModel.onPhoneChanged(it.take(mask.count{it == '0'}))
                             },
                             colors = OutlinedTextFieldDefaults.colors(
                                 unfocusedBorderColor = Block,
@@ -275,6 +301,7 @@ fun EditProfileScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.9f)
                                 .clip(RoundedCornerShape(14.dp)),
+                            visualTransformation = PhoneVisualTransformation()
                         )
                     }
                 }
@@ -283,7 +310,10 @@ fun EditProfileScreen(
                     Button(
                         onClick = {
                             viewModel.viewModelScope.launch {
-                                snackBarHost.showSnackbar("Данные изменены")
+                                viewModel.updateUser()
+                                if (viewModel.isEditSuccess) {
+                                    snackBarHost.showSnackbar("Данные изменены")
+                                }
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -308,13 +338,6 @@ fun EditProfileScreen(
             }
         }
     }
-}
-
-@Composable
-fun DialogSuccess(
-    viewModel: EditProfileViewModel
-) {
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
