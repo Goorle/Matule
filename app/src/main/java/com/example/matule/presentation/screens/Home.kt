@@ -1,5 +1,6 @@
 package com.example.matule.presentation.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +34,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,8 +54,10 @@ import com.example.matule.presentation.navigation.Routes
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
+import com.example.matule.presentation.ui.theme.Red
 import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.HomeViewModel
+import com.example.matule.presentation.viewmodel.SignInViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -94,6 +101,65 @@ fun Home(
             }
         }
     }
+     if (viewModel.isVisibleMessage) {
+         DialogError(viewModel)
+     }
+
+    if (viewModel.isVisibleMessageError) {
+        Toast.makeText(LocalContext.current, viewModel.messageText, Toast.LENGTH_LONG).show()
+    }
+}
+
+@Composable
+fun DialogError(
+    viewModel: HomeViewModel
+) {
+    AlertDialog(
+        onDismissRequest = {
+            viewModel.isVisibleMessage = false
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    viewModel.isVisibleMessage = false
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Accent
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "OK",
+                    fontSize = 16.sp
+                )
+            }
+        },
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.error),
+                contentDescription = "Error",
+                tint = Red,
+                modifier = Modifier.size(48.dp)
+            )
+        },
+        containerColor = Block,
+        title = {
+            Text(
+                text = "Ошибка!",
+                fontSize = 24.sp,
+                color = TextColor,
+                fontFamily = poppins
+            )
+        },
+        text = {
+            Text(
+                text = viewModel.messageText,
+                fontSize = 14.sp,
+                color = TextColor,
+                fontFamily = poppins
+            )
+        }
+    )
 }
 
 @Composable
@@ -113,18 +179,6 @@ private fun NewspaperRow(
                 lineHeight = 24.sp,
                 color = TextColor,
                 fontWeight = FontWeight.Medium
-            )
-
-            Text(
-                text = "Все",
-                fontSize = 16.sp,
-                fontFamily = poppins,
-                lineHeight = 24.sp,
-                color = Accent,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.clickable{
-
-                }
             )
         }
 
@@ -199,18 +253,10 @@ private fun TopBar() {
         actions = {
             IconButton(
                 onClick = {},
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Block,
-                    contentColor = TextColor
-                ),
+                enabled = false,
                 modifier = Modifier.size(50.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.bag),
-                    contentDescription = "Bag",
-                    tint = TextColor,
-                    modifier = Modifier.size(24.dp)
-                )
+
             }
 
             Spacer(Modifier.width(5.dp))

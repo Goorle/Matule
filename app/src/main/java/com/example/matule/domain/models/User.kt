@@ -7,16 +7,16 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class User(
     @SerialName("user_id")
-    val userId: String,
+    var userId: String,
     val email: String = "",
-    val phone: String = "",
-    val firstname: String = "",
-    val lastname: String? = "",
-    @SerialName("second_name")
-    val secondName: String = "",
+    var phone: String = "",
+    var firstname: String = "",
+    var lastname: String? = "",
+    @SerialName("secondname")
+    var secondName: String = "",
     @SerialName("reg_date")
     val regDate: String = "",
     val subscription: Boolean = false,
     @SerialName("user_image")
-    val userImage: String? = null
+    var userImage: String? = null
 )

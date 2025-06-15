@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Matule</string>
+    <string name="app_name">Для Вас</string>
     <string name="hello">Привет!</string>
     <string name="fill_details">Заполните Свои данные или продолжите через социальные медиа</string>
     <string name="password">Пароль</string>

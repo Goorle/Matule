@@ -1,5 +1,6 @@
 package com.example.matule.presentation.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,22 +12,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -40,25 +43,28 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.matule.R
 import com.example.matule.domain.font.poppins
-import com.example.matule.domain.models.CardData
 import com.example.matule.presentation.components.BottomAppBar
-import com.example.matule.presentation.components.CardProduct
+import com.example.matule.presentation.components.CardNotification
 import com.example.matule.presentation.ui.theme.Accent
-import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
 import com.example.matule.presentation.ui.theme.Red
 import com.example.matule.presentation.ui.theme.TextColor
-import com.example.matule.presentation.viewmodel.FavoriteViewModel
-import com.example.matule.presentation.viewmodel.SignInViewModel
+import com.example.matule.presentation.viewmodel.HomeViewModel
+import com.example.matule.presentation.viewmodel.NotificationViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoriteScreen(
-    viewModel: FavoriteViewModel = viewModel(),
-    navHostController: NavHostController
-){
+fun NotificationScreen(
+    viewModel: NotificationViewModel = viewModel(),
+    navHostController: NavHostController,
+) {
+    LaunchedEffect(Unit) {
+        viewModel.startRealtime(this)
+    }
+
     Scaffold(
         topBar = {
-            TopFavoriteBar(
+            NotificationTopBar(
             )
         },
         bottomBar = {
@@ -66,61 +72,42 @@ fun FavoriteScreen(
         }
     ) { innerPadding ->
         Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Background)
-            .padding(innerPadding)) {
+                .fillMaxSize()
+                .background(Block)
+                .padding(innerPadding),
+            contentAlignment = Alignment.TopCenter
 
-            if (viewModel.favoriteResponse.isNotEmpty()) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.padding(horizontal = 15.dp, vertical = 15.dp)
+        ) {
+            if (viewModel.notification.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(0.9f)
                 ) {
-                    items(viewModel.favoriteResponse) { item ->
-                        val card = CardData(
-                            publicationId = item.publicationId.id,
-                            name = item.publicationId.title,
-                            image = item.publicationId.image,
-                            isFavorite = true,
-                            publicationData = item.publicationId.publicationDate,
-                        )
-
-                        val currentCollection = item.userCollection
-
-                        if (currentCollection != null) {
-                            card.isReading = currentCollection.isReading
-                            card.countPageReading = currentCollection.countReading
-                        }
-
-                        CardProduct(
-                            card,
-                            navHostController
-                        )
+                    items(viewModel.notification) {
+                        CardNotification(it)
+                        Spacer(Modifier.height(10.dp))
                     }
                 }
-            } else if (!viewModel.isLoading) {
+            } else {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(0.9f)
                         .fillMaxHeight().align(Alignment.Center),
                     contentAlignment = Alignment.Center
-                    ) {
-
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxSize().padding(24.dp)
+                        modifier = Modifier.fillMaxSize()
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.favorite_filled), // Ваша иконка
+                            imageVector = Icons.Default.Notifications,
                             contentDescription = null,
-                            tint = Red,
-                            modifier = Modifier.size(48.dp)
-                        )
+                            tint = Accent,
+                            modifier = Modifier.size(48.dp))
                         Spacer(Modifier.height(16.dp))
+
                         Text(
-                            text = "Ваша коллекция пуста",
+                            text = "Нет новых уведомлений",
                             fontFamily = poppins,
                             fontWeight = FontWeight.Normal,
                             fontSize = 18.sp,
@@ -128,9 +115,11 @@ fun FavoriteScreen(
                             textAlign = TextAlign.Center,
                             lineHeight = 30.sp
                         )
+
                         Spacer(Modifier.height(8.dp))
+
                         Text(
-                            text = "Пополните вашу коллекцию нажатием на \"сердечко\" по публикации.",
+                            text = "Как только что-то появится, мы вас оповестим",
                             fontFamily = poppins,
                             fontWeight = FontWeight.Normal,
                             fontSize = 18.sp,
@@ -151,7 +140,7 @@ fun FavoriteScreen(
 
 @Composable
 fun DialogError(
-    viewModel: FavoriteViewModel
+    viewModel: NotificationViewModel
 ) {
     AlertDialog(
         onDismissRequest = {
@@ -203,29 +192,34 @@ fun DialogError(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopFavoriteBar(
+private fun NotificationTopBar(
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "Коллекция",
+                text = "Уведомления",
+                fontFamily = poppins,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
         },
+
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Background,
-            navigationIconContentColor = TextColor
-        )
+            containerColor = Block,
+            navigationIconContentColor = TextColor,
+            titleContentColor = TextColor,
+            actionIconContentColor = TextColor
+        ),
+        modifier = Modifier.padding(horizontal = 7.dp)
     )
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun FavoritePreview(){
-    FavoriteScreen(
-        navHostController =  rememberNavController(),
+private fun NotificationPreview() {
+    NotificationScreen(
+        navHostController = rememberNavController()
     )
 }

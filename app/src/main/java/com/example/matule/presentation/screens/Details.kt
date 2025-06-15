@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -55,8 +56,10 @@ import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
 import com.example.matule.presentation.ui.theme.Hint
+import com.example.matule.presentation.ui.theme.Red
 import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.DetailsViewModel
+import com.example.matule.presentation.viewmodel.HomeViewModel
 
 @Composable
 fun DetailsScreen(
@@ -227,6 +230,62 @@ fun DetailsScreen(
             }
         }
     }
+
+    if (viewModel.isVisibleMessage) {
+        DialogError(viewModel)
+    }
+}
+
+@Composable
+fun DialogError(
+    viewModel: DetailsViewModel
+) {
+    AlertDialog(
+        onDismissRequest = {
+            viewModel.isVisibleMessage = false
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    viewModel.isVisibleMessage = false
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Accent
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "OK",
+                    fontSize = 16.sp
+                )
+            }
+        },
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.error),
+                contentDescription = "Error",
+                tint = Red,
+                modifier = Modifier.size(48.dp)
+            )
+        },
+        containerColor = Block,
+        title = {
+            Text(
+                text = "Ошибка!",
+                fontSize = 24.sp,
+                color = TextColor,
+                fontFamily = poppins
+            )
+        },
+        text = {
+            Text(
+                text = viewModel.messageText,
+                fontSize = 14.sp,
+                color = TextColor,
+                fontFamily = poppins
+            )
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

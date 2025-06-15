@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Matule</string>
+    <string name="app_name">Для Вас</string>
     <string name="hello">Hello Again!</string>
     <string name="fill_details">Fill your details or continue with social media</string>
     <string name="email" translatable="false">Email</string>

@@ -66,10 +66,14 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.9")
     implementation("androidx.datastore:datastore-preferences:1.1.3")
 
-    implementation("io.github.jan-tennert.supabase:auth-kt:3.1.2")
-    implementation("io.github.jan-tennert.supabase:storage-kt:3.1.2")
-    implementation("io.github.jan-tennert.supabase:postgrest-kt:3.1.2")
-    implementation("io.ktor:ktor-client-android:3.1.1")
+    implementation("io.github.jan-tennert.supabase:auth-kt:3.1.4")
+    implementation("io.github.jan-tennert.supabase:storage-kt:3.1.4")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:3.1.4")
+    implementation("io.github.jan-tennert.supabase:realtime-kt:3.1.4")
+
+    implementation("com.squareup.okhttp3:okhttp:4.12.0") // Актуальная версия
+    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.12.0")
+    implementation("io.ktor:ktor-client-cio:3.1.1")
 
 //    implementation("io.github.afreakyelf:Pdf-Viewer:2.3.4")
     implementation("com.github.pratikksahu:JetPDFVue:1.0.7")

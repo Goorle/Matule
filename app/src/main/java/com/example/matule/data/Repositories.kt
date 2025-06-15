@@ -1,24 +1,37 @@
 package com.example.matule.data
 
+import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.example.matule.domain.models.FavoritePublication
 import com.example.matule.domain.models.FavoriteResponse
 import com.example.matule.domain.models.NewspaperResponse
+import com.example.matule.domain.models.Notification
 import com.example.matule.domain.models.Publication
 import com.example.matule.domain.models.User
 import com.example.matule.domain.models.UserCollection
+import com.example.matule.presentation.viewmodel.NotificationViewModel
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.postgresListDataFlow
 import io.github.jan.supabase.storage.storage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.json.Json
 
 class Repositories {
-    private val client = Database.supabase
+    val client = Database.supabase
 
     fun getUserId(): String {
-        var userId = "cbb588f6-4c90-4b65-8370-f205e0da5b36"
+        var userId = "dc016d2a-01dc-41f8-8412-9e500beec87b"
         val data = client.auth.currentUserOrNull()
 
         if (data != null) {
@@ -161,6 +174,26 @@ class Repositories {
         }.decodeSingleOrNull()
     }
 
+    suspend fun updateUserData(user: User) {
+        val userId = getUserId()
+
+        client.from("User").update({
+            User::firstname setTo user.firstname
+            User::lastname setTo user.lastname
+            User::phone setTo user.phone
+            User::userImage setTo user.userImage
+            User::subscription setTo user.subscription
+            User::email setTo user.email
+            set("secondname", user.secondName)
+        }
+
+        ){
+            filter {
+                User::userId eq userId
+            }
+        }
+    }
+
     suspend fun deleteFromFavorite(publicationId: String) {
         val userId = getUserId()
 
@@ -181,5 +214,19 @@ class Repositories {
         ) {
             upsert = true
         }
+    }
+
+    suspend fun getListNotification(): List<Notification> {
+        val userId = getUserId()
+
+        return client.from("Notification").select{
+          filter {
+              Notification::userId eq userId
+          }
+        }.decodeList<Notification>()
+    }
+
+    fun realtimeUpdateNotification() {
+        val flow: Flow<List<Notification>>
     }
 }

@@ -12,8 +12,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.matule.presentation.screens.DetailsScreen
+import com.example.matule.presentation.screens.EditProfileScreen
 import com.example.matule.presentation.screens.FavoriteScreen
 import com.example.matule.presentation.screens.Home
+import com.example.matule.presentation.screens.NotificationScreen
 import com.example.matule.presentation.screens.RegisterScreen
 import com.example.matule.presentation.screens.SignIn
 import com.example.matule.presentation.screens.SplashScreen
@@ -24,7 +26,7 @@ import com.example.matule.presentation.screens.UserScreen
 fun NavigationApp(navHostController: NavHostController) {
     NavHost(
         navController = navHostController,
-        startDestination = Routes.Profile.route
+        startDestination = Routes.SplashScreen.route
     ) {
 
         composable(
@@ -84,16 +86,26 @@ fun NavigationApp(navHostController: NavHostController) {
         composable(route = Routes.Favorite.route) {
             FavoriteScreen(
                 navHostController = navHostController,
-                onClickBack = {
-                    navHostController.popBackStack()
-                }
             )
         }
 
         composable(route = Routes.Profile.route) {
             UserScreen(
                 onClickBack = {navHostController.popBackStack()},
+                onClickEditProfile = {navHostController.navigate(Routes.EditProfileScreen.route)},
                 navHostController = navHostController
+            )
+        }
+
+        composable(route = Routes.EditProfileScreen.route) {
+            EditProfileScreen(
+                onClickBack = {navHostController.navigate(Routes.Profile.route) {launchSingleTop = true} }
+            )
+        }
+
+        composable(route =  Routes.Notification.route) {
+            NotificationScreen(
+                navHostController = navHostController,
             )
         }
     }

@@ -14,6 +14,9 @@ import com.example.matule.data.Repositories
 import com.example.matule.domain.models.NewspaperResponse
 import com.example.matule.domain.models.Publication
 import com.example.matule.domain.models.UserCollection
+import io.github.jan.supabase.exceptions.HttpRequestException
+import io.github.jan.supabase.postgrest.exception.PostgrestRestException
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import kotlinx.coroutines.launch
 
 class DetailsViewModel: ViewModel() {
@@ -26,11 +29,25 @@ class DetailsViewModel: ViewModel() {
     var buttonEnable by mutableStateOf(false)
     var userCollection by mutableStateOf<UserCollection?>(null)
 
+    var messageText by mutableStateOf("")
+    var isVisibleMessage by mutableStateOf(false)
+
     fun getUserCollection(publicationId: String) {
         var userId = repository.getUserId()
         if (userId.isNotEmpty()) {
             viewModelScope.launch {
-                userCollection = repository.getUserPublication(publicationId, userId)
+                try {
+                    userCollection = repository.getUserPublication(publicationId, userId)
+                } catch (_: PostgrestRestException) {
+                    messageText = "Сервер временно недоступен. Попробуйте повторить попытку позже"
+                    isVisibleMessage = true
+                } catch (_: HttpRequestTimeoutException) {
+                    messageText = "Не удалось соединиться с сервером. Проверьте ваше интернет-соединение"
+                    isVisibleMessage = true
+                } catch(_: HttpRequestException) {
+                    messageText = "Проблемы с соединением. Проверьте ваше подключение к интернету"
+                    isVisibleMessage = true
+                }
             }
         }
     }
@@ -50,23 +67,45 @@ class DetailsViewModel: ViewModel() {
 
     fun getItem(publicationId: String) {
         viewModelScope.launch {
-            item = repository.getPublicationById(publicationId)
-            if (item != null) {
-                buttonEnable = true
+            try {
+                item = repository.getPublicationById(publicationId)
+                if (item != null) {
+                    buttonEnable = true
+                }
+            } catch (_: PostgrestRestException) {
+                messageText = "Сервер временно недоступен. Попробуйте повторить попытку позже"
+                isVisibleMessage = true
+            } catch (_: HttpRequestTimeoutException) {
+                messageText = "Не удалось соединиться с сервером. Проверьте ваше интернет-соединение"
+                isVisibleMessage = true
+            } catch(_: HttpRequestException) {
+                messageText = "Проблемы с соединением. Проверьте ваше подключение к интернету"
+                isVisibleMessage = true
             }
         }
     }
 
     fun getImage() {
         viewModelScope.launch {
-            val itemBuff = item
-            if (itemBuff != null) {
-                val imageUrl = itemBuff.image
-                val list = imageUrl.split("/")
-                val bucket = list[0]
-                val file = list[1]
-                val byteArray = repository.getFileFromStorage(bucket, file)
-                bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+            try {
+                val itemBuff = item
+                if (itemBuff != null) {
+                    val imageUrl = itemBuff.image
+                    val list = imageUrl.split("/")
+                    val bucket = list[0]
+                    val file = list[1]
+                    val byteArray = repository.getFileFromStorage(bucket, file)
+                    bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                }
+            } catch (_: PostgrestRestException) {
+                messageText = "Сервер временно недоступен. Попробуйте повторить попытку позже"
+                isVisibleMessage = true
+            } catch (_: HttpRequestTimeoutException) {
+                messageText = "Не удалось соединиться с сервером. Проверьте ваше интернет-соединение"
+                isVisibleMessage = true
+            } catch(_: HttpRequestException) {
+                messageText = "Проблемы с соединением. Проверьте ваше подключение к интернету"
+                isVisibleMessage = true
             }
         }
     }
@@ -74,12 +113,23 @@ class DetailsViewModel: ViewModel() {
     fun getUrlPDF() {
         val itemBuff = item
         if (itemBuff != null && itemBuff.pointFile.isNotEmpty()) {
-            val filePath = itemBuff.pointFile
-            val list = filePath.split("/")
-            val bucket = list[0]
-            val file = list[1]
+            try {
+                val filePath = itemBuff.pointFile
+                val list = filePath.split("/")
+                val bucket = list[0]
+                val file = list[1]
 
-            urlPDF = repository.getUrlFile(bucket, file)
+                urlPDF = repository.getUrlFile(bucket, file)
+            } catch (_: PostgrestRestException) {
+                messageText = "Сервер временно недоступен. Попробуйте повторить попытку позже"
+                isVisibleMessage = true
+            } catch (_: HttpRequestTimeoutException) {
+                messageText = "Не удалось соединиться с сервером. Проверьте ваше интернет-соединение"
+                isVisibleMessage = true
+            } catch(_: HttpRequestException) {
+                messageText = "Проблемы с соединением. Проверьте ваше подключение к интернету"
+                isVisibleMessage = true
+            }
         }
     }
 
@@ -93,15 +143,22 @@ class DetailsViewModel: ViewModel() {
 
     fun addPublicationToCollection(publicationId: String) {
         viewModelScope.launch {
+            try {
+                val userId = repository.getUserId()
 
-            val userId = repository.getUserId()
-
-            if (userId != "" && userCollection == null) {
-                repository.addPublicationCollection(publicationId, userId)
+                if (userId != "" && userCollection == null) {
+                    repository.addPublicationCollection(publicationId, userId)
+                }
+            } catch (_: PostgrestRestException) {
+                messageText = "Сервер временно недоступен. Попробуйте повторить попытку позже"
+                isVisibleMessage = true
+            } catch (_: HttpRequestTimeoutException) {
+                messageText = "Не удалось соединиться с сервером. Проверьте ваше интернет-соединение"
+                isVisibleMessage = true
+            } catch(_: HttpRequestException) {
+                messageText = "Проблемы с соединением. Проверьте ваше подключение к интернету"
+                isVisibleMessage = true
             }
         }
     }
-
-
-
 }
