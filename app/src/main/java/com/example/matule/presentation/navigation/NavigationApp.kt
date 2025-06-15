@@ -15,6 +15,7 @@ import com.example.matule.presentation.screens.DetailsScreen
 import com.example.matule.presentation.screens.EditProfileScreen
 import com.example.matule.presentation.screens.FavoriteScreen
 import com.example.matule.presentation.screens.Home
+import com.example.matule.presentation.screens.NotificationScreen
 import com.example.matule.presentation.screens.RegisterScreen
 import com.example.matule.presentation.screens.SignIn
 import com.example.matule.presentation.screens.SplashScreen
@@ -85,9 +86,6 @@ fun NavigationApp(navHostController: NavHostController) {
         composable(route = Routes.Favorite.route) {
             FavoriteScreen(
                 navHostController = navHostController,
-                onClickBack = {
-                    navHostController.popBackStack()
-                }
             )
         }
 
@@ -102,6 +100,12 @@ fun NavigationApp(navHostController: NavHostController) {
         composable(route = Routes.EditProfileScreen.route) {
             EditProfileScreen(
                 onClickBack = {navHostController.navigate(Routes.Profile.route) {launchSingleTop = true} }
+            )
+        }
+
+        composable(route =  Routes.Notification.route) {
+            NotificationScreen(
+                navHostController = navHostController,
             )
         }
     }

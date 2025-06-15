@@ -23,6 +23,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -61,6 +64,7 @@ import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
 import com.example.matule.presentation.ui.theme.Red
 import com.example.matule.presentation.ui.theme.TextColor
+import com.example.matule.presentation.viewmodel.HomeViewModel
 import com.example.matule.presentation.viewmodel.UserViewModel
 
 @Composable
@@ -371,8 +375,63 @@ fun UserScreen(
                 }
             }
         }
-
     }
+
+    if (viewModel.isVisibleMessage) {
+        DialogError(viewModel)
+    }
+}
+
+@Composable
+fun DialogError(
+    viewModel: UserViewModel
+) {
+    AlertDialog(
+        onDismissRequest = {
+            viewModel.isVisibleMessage = false
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    viewModel.isVisibleMessage = false
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Accent
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "OK",
+                    fontSize = 16.sp
+                )
+            }
+        },
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.error),
+                contentDescription = "Error",
+                tint = Red,
+                modifier = Modifier.size(48.dp)
+            )
+        },
+        containerColor = Block,
+        title = {
+            Text(
+                text = "Ошибка!",
+                fontSize = 24.sp,
+                color = TextColor,
+                fontFamily = poppins
+            )
+        },
+        text = {
+            Text(
+                text = viewModel.messageText,
+                fontSize = 14.sp,
+                color = TextColor,
+                fontFamily = poppins
+            )
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -394,17 +453,9 @@ private fun TopBarUser(
         },
         navigationIcon = {
             IconButton(
-                onClick = onClickBack,
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Background
-                ),
+                onClick = {  }, enabled = false,
                 modifier = Modifier.size(44.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.back_arrow),
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp)
-                )
             }
         },
         actions = {

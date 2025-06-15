@@ -72,6 +72,7 @@ fun BottomAppBar(
         NavigationBarItem(
             selected = currentRoute == Routes.Notification.route,
             onClick = {
+                navHostController.navigate(Routes.Notification.route)
             },
             icon =  {
                 Icon(

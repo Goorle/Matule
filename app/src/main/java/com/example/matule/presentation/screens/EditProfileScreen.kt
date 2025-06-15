@@ -65,6 +65,7 @@ import com.example.matule.presentation.ui.theme.Red
 import com.example.matule.presentation.ui.theme.SubTextDark
 import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.EditProfileViewModel
+import com.example.matule.presentation.viewmodel.NotificationViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -338,6 +339,62 @@ fun EditProfileScreen(
             }
         }
     }
+
+    if (viewModel.isVisibleMessage) {
+        DialogError(viewModel)
+    }
+}
+
+@Composable
+fun DialogError(
+    viewModel: EditProfileViewModel
+) {
+    AlertDialog(
+        onDismissRequest = {
+            viewModel.isVisibleMessage = false
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    viewModel.isVisibleMessage = false
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Accent
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "OK",
+                    fontSize = 16.sp
+                )
+            }
+        },
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.error),
+                contentDescription = "Error",
+                tint = Red,
+                modifier = Modifier.size(48.dp)
+            )
+        },
+        containerColor = Block,
+        title = {
+            Text(
+                text = "Ошибка!",
+                fontSize = 24.sp,
+                color = TextColor,
+                fontFamily = poppins
+            )
+        },
+        text = {
+            Text(
+                text = viewModel.messageText,
+                fontSize = 14.sp,
+                color = TextColor,
+                fontFamily = poppins
+            )
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

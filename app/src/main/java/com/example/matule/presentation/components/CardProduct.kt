@@ -1,5 +1,7 @@
 package com.example.matule.presentation.components
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -28,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,8 +54,10 @@ import com.example.matule.presentation.viewmodel.CardViewModel
 fun CardProduct(
     cardData: CardData,
     navHostController: NavHostController,
-    viewModel: CardViewModel = viewModel(key = "card_${cardData.publicationId}")
+    viewModel: CardViewModel = viewModel(key = "card_${cardData.publicationId}"),
 ) {
+
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.getImage(cardData.image)
     }
@@ -196,6 +201,10 @@ fun CardProduct(
             }
         }
     }
+
+    if (viewModel.isVisibleMessage) {
+        //Toast.makeText(context, viewModel.messageText, Toast.LENGTH_LONG).show()
+    }
 }
 
 
@@ -208,6 +217,6 @@ private fun CardPreview() {
         CardData(
             name = "Газета для вас",
         ),
-        navHostController = rememberNavController()
+        navHostController = rememberNavController(),
     )
 }
