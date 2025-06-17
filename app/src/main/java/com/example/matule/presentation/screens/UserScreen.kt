@@ -164,6 +164,8 @@ fun UserScreen(
                         Text(
                             text = "Имя",
                             fontFamily = poppins,
+                            color = TextColor,
+                            fontSize = 16.sp
                         )
                         Row(
                             modifier = Modifier
@@ -176,7 +178,8 @@ fun UserScreen(
                             Text(
                                 text = viewModel.firstname,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal
+                                fontWeight = FontWeight.Normal,
+                                color = TextColor
                             )
 
                             val color = if (viewModel.firstname.isEmpty()) Red else Accent
@@ -197,6 +200,8 @@ fun UserScreen(
                         Text(
                             text = "Фамилия",
                             fontFamily = poppins,
+                            color = TextColor,
+                            fontSize = 16.sp
                         )
                         Row(
                             modifier = Modifier
@@ -209,7 +214,8 @@ fun UserScreen(
                             Text(
                                 text = viewModel.lastname,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal
+                                fontWeight = FontWeight.Normal,
+                                color = TextColor
                             )
                             val color = if (viewModel.lastname.isEmpty()) Red else Accent
                             val image = if (viewModel.lastname.isEmpty()) Icons.Default.Clear else Icons.Default.Check
@@ -229,6 +235,8 @@ fun UserScreen(
                         Text(
                             text = "Отчество",
                             fontFamily = poppins,
+                            color = TextColor,
+                            fontSize = 16.sp
                         )
                         Row(
                             modifier = Modifier
@@ -241,7 +249,8 @@ fun UserScreen(
                             Text(
                                 text = viewModel.secondname,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal
+                                fontWeight = FontWeight.Normal,
+                                color = TextColor
                             )
 
                             Icon(
@@ -260,6 +269,8 @@ fun UserScreen(
                         Text(
                             text = "Почта",
                             fontFamily = poppins,
+                            color = TextColor,
+                            fontSize = 16.sp
                         )
                         Row(
                             modifier = Modifier
@@ -272,7 +283,8 @@ fun UserScreen(
                             Text(
                                 text = viewModel.email,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal
+                                fontWeight = FontWeight.Normal,
+                                color = TextColor
                             )
                             val color = if (viewModel.email.isEmpty()) Red else Accent
                             val image = if (viewModel.email.isEmpty()) Icons.Default.Clear else Icons.Default.Check

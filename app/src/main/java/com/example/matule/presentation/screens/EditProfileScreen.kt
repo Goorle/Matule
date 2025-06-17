@@ -410,6 +410,7 @@ private fun TopBarEditProfile(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
+                color = TextColor,
                 modifier = Modifier.fillMaxWidth()
             )
         },
@@ -424,6 +425,7 @@ private fun TopBarEditProfile(
                 Icon(
                     painter = painterResource(R.drawable.back_arrow),
                     contentDescription = null,
+                    tint = TextColor,
                     modifier = Modifier.size(24.dp)
                 )
             }

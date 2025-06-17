@@ -10,6 +10,7 @@ import com.example.matule.domain.models.Publication
 import com.example.matule.domain.models.User
 import com.example.matule.domain.models.UserCollection
 import com.example.matule.presentation.viewmodel.NotificationViewModel
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.user.UserInfo
@@ -27,8 +28,12 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.json.Json
 
-class Repositories {
-    val client = Database.supabase
+class Repositories() {
+    var client: SupabaseClient = Database.supabase
+
+    fun isUserLoggedIn(): Boolean {
+        return client.auth.currentAccessTokenOrNull() != null
+    }
 
     fun getUserId(): String {
         var userId = "dc016d2a-01dc-41f8-8412-9e500beec87b"
@@ -142,7 +147,7 @@ class Repositories {
         }.decodeList<FavoriteResponse>()
     }
 
-    suspend fun findFavorite(publicationId: String): FavoritePublication? {
+    suspend fun   findFavorite(publicationId: String): FavoritePublication? {
         val userId = getUserId()
 
         return client.from("FavoritePublication").select{
