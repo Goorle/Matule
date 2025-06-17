@@ -210,6 +210,7 @@ private fun TopFavoriteBar(
             Text(
                 text = "Коллекция",
                 fontSize = 24.sp,
+                color = TextColor,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()

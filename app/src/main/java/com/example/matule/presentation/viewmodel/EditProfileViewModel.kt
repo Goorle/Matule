@@ -116,6 +116,8 @@ class EditProfileViewModel: ViewModel() {
         } catch(_: HttpRequestException) {
             messageText = "Проблемы с соединением. Проверьте ваше подключение к интернету"
             isVisibleMessage = true
+        } finally {
+            isLoading = false
         }
     }
 

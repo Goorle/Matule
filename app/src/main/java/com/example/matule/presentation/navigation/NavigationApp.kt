@@ -58,11 +58,16 @@ fun NavigationApp(navHostController: NavHostController) {
         composable(
             route = Routes.SplashScreen.route
         ) {
-            SplashScreen {
+            SplashScreen(onNavigateToLogin =  {
                     navHostController.navigate(Routes.SignIn.route) {
                         popUpTo(Routes.SplashScreen.route)
                 }
-            }
+            },
+                onNavigateToMain = {
+                    navHostController.navigate(Routes.Home.route) {
+                        popUpTo(Routes.SplashScreen.route)
+                    }
+                })
         }
 
         composable(
