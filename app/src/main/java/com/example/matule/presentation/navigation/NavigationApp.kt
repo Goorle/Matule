@@ -96,7 +96,6 @@ fun NavigationApp(navHostController: NavHostController) {
 
         composable(route = Routes.Profile.route) {
             UserScreen(
-                onClickBack = {navHostController.popBackStack()},
                 onClickEditProfile = {navHostController.navigate(Routes.EditProfileScreen.route)},
                 navHostController = navHostController
             )
