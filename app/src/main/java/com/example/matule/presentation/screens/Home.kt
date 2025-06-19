@@ -20,20 +20,34 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -42,6 +56,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -50,7 +65,9 @@ import com.example.matule.domain.font.poppins
 import com.example.matule.domain.models.CardData
 import com.example.matule.presentation.components.BottomAppBar
 import com.example.matule.presentation.components.CardProduct
+import com.example.matule.presentation.components.ModalNavigationApp
 import com.example.matule.presentation.navigation.Routes
+import com.example.matule.presentation.screens.TopBar
 import com.example.matule.presentation.ui.theme.Accent
 import com.example.matule.presentation.ui.theme.Background
 import com.example.matule.presentation.ui.theme.Block
@@ -58,6 +75,7 @@ import com.example.matule.presentation.ui.theme.Red
 import com.example.matule.presentation.ui.theme.TextColor
 import com.example.matule.presentation.viewmodel.HomeViewModel
 import com.example.matule.presentation.viewmodel.SignInViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -65,6 +83,7 @@ fun Home(
     viewModel: HomeViewModel = viewModel(),
     navHostController: NavHostController
 ) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     LaunchedEffect(Unit) {
         navHostController.addOnDestinationChangedListener { _, destination, _ ->
@@ -73,30 +92,34 @@ fun Home(
             }
         }
     }
+    ModalNavigationApp(drawerState = drawerState, navHostController = navHostController) {
+        Scaffold(
+            topBar = {
+                TopBar(
+                    drawerState = drawerState
+                )
+            },
+            bottomBar = {
+                BottomAppBar(navHostController)
+            },
 
-    Scaffold(
-        topBar = {
-            TopBar()
-        },
-        bottomBar = {
-            BottomAppBar(navHostController)
-        },
-    ) { innerPadding ->
-        LazyColumn (
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .background(Background)
-                .padding(horizontal = 15.dp, vertical = 15.dp)
-        ) {
-            item {
-                Box(
-                    modifier = Modifier.height(1200.dp)
-                ) {
-                    NewspaperRow(
-                        viewModel,
-                        navHostController
+            ) { innerPadding ->
+            LazyColumn(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .background(Background)
+                    .padding(horizontal = 15.dp, vertical = 15.dp)
+            ) {
+                item {
+                    Box(
+                        modifier = Modifier.height(1200.dp)
+                    ) {
+                        NewspaperRow(
+                            viewModel,
+                            navHostController
                         )
+                    }
                 }
             }
         }
@@ -218,7 +241,10 @@ private fun NewspaperRow(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar() {
+private fun TopBar(
+    drawerState: DrawerState
+) {
+    val scope = rememberCoroutineScope()
     TopAppBar(
         title = {
             Row(
@@ -242,7 +268,11 @@ private fun TopBar() {
             }
         },
         navigationIcon = {
-            IconButton(onClick = {}) {
+            IconButton(onClick = {
+                scope.launch {
+                    if (drawerState.isOpen) drawerState.close() else drawerState.open()
+                }
+            }) {
                 Image(
                     painter = painterResource(R.drawable.hamburger),
                     contentDescription = "Navigation Icon",
@@ -254,7 +284,7 @@ private fun TopBar() {
             IconButton(
                 onClick = {},
                 enabled = false,
-                modifier = Modifier.size(50.dp)
+                modifier = Modifier.size(24.dp)
             ) {
 
             }

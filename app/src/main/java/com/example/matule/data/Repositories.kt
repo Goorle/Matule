@@ -11,6 +11,7 @@ import com.example.matule.domain.models.User
 import com.example.matule.domain.models.UserCollection
 import com.example.matule.presentation.viewmodel.NotificationViewModel
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.SignOutScope
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.user.UserInfo
@@ -33,6 +34,10 @@ class Repositories() {
 
     fun isUserLoggedIn(): Boolean {
         return client.auth.currentAccessTokenOrNull() != null
+    }
+
+    suspend fun logOutSystem() {
+        client.auth.signOut()
     }
 
     fun getUserId(): String {

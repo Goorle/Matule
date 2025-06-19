@@ -59,7 +59,7 @@ fun CardProduct(
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-        viewModel.getImage(cardData.image)
+        //viewModel.getImage(cardData.image)
     }
 
     viewModel.checkFavorite(cardData.publicationId)

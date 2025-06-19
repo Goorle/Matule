@@ -1,12 +1,14 @@
 package com.example.matule.presentation.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,6 +26,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +58,8 @@ fun SignIn(
     onClickSignIn: () -> Unit,
     onClickRegister: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+
     val textFieldColors = TextFieldDefaults.colors(
         unfocusedTextColor = TextColor,
         focusedTextColor = TextColor,
@@ -67,7 +73,13 @@ fun SignIn(
         modifier = Modifier
             .fillMaxSize()
             .background(Block)
-            .padding(vertical = 20.dp, horizontal = 25.dp),
+            .padding(vertical = 20.dp, horizontal = 25.dp)
+            .pointerInput(Unit) {
+                detectTapGestures {onTap ->
+                    focusManager.clearFocus()
+
+                }
+            },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
@@ -122,6 +134,7 @@ fun SignIn(
                         )
                     },
                     shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
                     colors = textFieldColors,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -168,6 +181,7 @@ fun SignIn(
                             )
                         }
                     },
+                    singleLine = true,
                     visualTransformation = viewModel.visualPassword,
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
